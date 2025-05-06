@@ -1,9 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import authenticate, logout as auth_logout
-from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import TodoItem
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 
@@ -55,7 +53,3 @@ def reset(request):
         return redirect('home')
 
     return render(request, 'reset.html')
-
-def todos(request):
-    items = TodoItem.objects.all()
-    return render(request, "todos.html", {"todos": items})
