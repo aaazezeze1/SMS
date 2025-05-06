@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{% static 'SMSapp/style.css' %}" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
@@ -13,50 +12,82 @@
 </head>
 <body>
     <div class="container my-4">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-
-            <div class="col">
-                <div class="card h-100 text-center">
-                    <img src="{% static 'icons/records.png' %}" class="card-img-top" alt="Card image cap">
+        <h1>Student Management System</h1>
+        <hr><br>
+        <h3>Student Record Management</h3>
+        <div class="d-flex">  <!-- Changed to flex container -->
+            <div class="card-container">
+                <div class="card text-center">
+                    <img src="{% static 'icons/records.png' %}" class="card-img-top" alt="Student List">
                     <div class="card-body">
-                        <h5 class="card-title">Student Record Management</h5><br>
-                        <p class="card-text">Student List</p>
-                        <p class="card-text">Performance Prediction</p>
+                        <h5 class="card-title">Student List</h5>
                     </div>
                 </div>
-        </div>
+            </div>
 
-        <div class="col">
-            <div class="card h-100 text-center">
-                <img src="{% static 'icons/class.png' %}" class="card-img-top" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Class Management</h5><br>
+            <div class="card-container">
+                <div class="card text-center">
+                    <img src="{% static 'icons/class.png' %}" class="card-img-top" alt="Class Management">
+                    <div class="card-body">
+                        <h5 class="card-title">Class Management</h5>
+                    </div>
                 </div>
             </div>
         </div>
+        <br>
+        <h3>SMART Analytics</h3>
+        <div class="d-flex">  <!-- Changed to flex container -->
+            <div class="card-container">
+                <div class="card text-center">
+                    <img src="{% static 'icons/analytics.png' %}" class="card-img-top" alt="Student List">
+                    <div class="card-body">
+                        <h5 class="card-title">Performance Prediction</h5>
+                    </div>
+                </div>
+            </div>
 
-        <div class="col">
-            <div class="card h-100 text-center">
-                <img src="{% static 'icons/analytics.png' %}" class="card-img-top" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">SMART Analytics</h5><br>
-                    <p class="card-text">Student Grouping and Profiling</p>
-                    <p class="card-text">Drop Out Risk Prediction</p>
+            <div class="card-container">
+                <div class="card text-center">
+                    <img src="{% static 'icons/group.png' %}" class="card-img-top" alt="Class Management">
+                    <div class="card-body">
+                        <h5 class="card-title">Student Grouping & Profiling</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-container">
+                <div class="card text-center">
+                    <img src="{% static 'icons/risk.png' %}" class="card-img-top" alt="Class Management">
+                    <div class="card-body">
+                        <h5 class="card-title">Droup Out Risk Prediction</h5>
+                    </div>
                 </div>
             </div>
         </div>
+        <br>
+        <h3>Settings</h3>
+        <div class="d-flex">  <!-- Changed to flex container -->
+            <div class="card-container">
+                <div class="card text-center">
+                    <img src="{% static 'icons/change.png' %}" class="card-img-top" alt="Student List">
+                    <div class="card-body">
+                        <h5 class="card-title">Change Username & Password</h5>
+                    </div>
+                </div>
+            </div>
 
-        <div class="col">
-            <div class="card h-100 text-center">
-                <img src="{% static 'icons/settings.png' %}" class="card-img-top" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Settings</h5><br>
-                    <p class="card-text">Change Username and Password</p>
-                    <p class="card-text">Logout</p>
+            <div class="card-container">
+                <div class="card text-center">
+                    <img src="{% static 'icons/logout.png' %}" class="card-img-top" alt="Class Management">
+                    <div class="card-body">
+                        <!-- <h5 class="card-title">Logout</h5> -->
+                        <h5 class="card-title"><a href="{% url 'logout' %}">Logout</a></h5>
+                    </div>
                 </div>
             </div>
         </div>
-        </div>
+        <br>
+        <br>
     </div>
 
     <style>
@@ -64,21 +95,62 @@
             font-family: "Ubuntu", sans-serif;
         }
 
-        p:hover {
-            color: #0d6efd;
-            font-weight: bold;
+        a {
+            color: black;
+            text-decoration: none;
         }
 
-        p {
-            font-style: italic;
+        a:visited {
+            color: black;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #d63384;
+        }
+
+        a:active {
+            color: black;
+        }
+
+        .d-flex {
+            gap: 35px; /* Minimal gap between cards */
+        }
+
+        .card-container {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .card {
+            width: 150px;
+            /* height: 170px; */
+            height: 210px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            text-align: center;
+            margin: 0 !important;
+        }
+
+        .card-img-top {
+            width: 100px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 10px;
         }
 
         .container {
-        width: 80vw;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%)
+            position: absolute;
+            transform: translate(10%, 10%);
+        }
+
+        /* Remove all default spacing */
+        body, html {
+            margin: 0;
+            padding: 0;
         }
     </style>
 
