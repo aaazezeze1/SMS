@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SMS Login</title>
+    <title>Change Credentials</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
 <body class="bg-light">
     <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
         <div class="card shadow p-4" style="width: 100%; max-width: 400px; border-radius: 1rem;">
-            <h2 class="text-center mb-4">Login</h2>
+            <h2 class="text-center mb-4">Change Credentials</h2>
 
             <form method="POST" novalidate>
                 {% csrf_token %}
@@ -27,7 +27,7 @@
                     <input type="password" class="form-control" name="password" id="password" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">Login</button>
+                <button type="submit" class="btn btn-primary w-100">Update and Go Back</button>
             </form>
 
             {% if error %}

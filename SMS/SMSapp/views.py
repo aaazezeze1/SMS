@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, logout as auth_logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import TodoItem
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 
 # Create your views here.
 def home(request):
@@ -29,6 +31,30 @@ def logout(request):
     auth_logout(request)
     messages.success(request, ("You have been logged out"))
     return redirect("login")
+
+@login_required
+def reset(request):
+    user = request.user
+
+    if request.method == 'POST':
+        new_username = request.POST.get('username')
+        new_password = request.POST.get('password')
+
+        if new_username:
+            user.username = new_username
+
+        if new_password:
+            user.set_password(new_password)
+
+        user.save()
+
+        # Update session *after* saving password
+        update_session_auth_hash(request, user)
+
+        messages.success(request, "Credentials updated successfully.")
+        return redirect('home')
+
+    return render(request, 'reset.html')
 
 def todos(request):
     items = TodoItem.objects.all()
