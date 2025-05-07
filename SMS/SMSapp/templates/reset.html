@@ -13,10 +13,8 @@
     <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
         <div class="card shadow p-4" style="width: 100%; max-width: 400px; border-radius: 1rem;">
             <h2 class="text-center mb-4">Change Credentials</h2>
-
             <form method="POST" novalidate>
                 {% csrf_token %}
-
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" class="form-control" name="username" id="username" required>
@@ -26,10 +24,8 @@
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" name="password" id="password" required>
                 </div>
-
                 <button type="submit" class="btn btn-primary w-100">Update and Go Back</button>
             </form>
-
             {% if error %}
                 <div class="alert alert-danger mt-3">
                     {{ error }}
@@ -43,13 +39,14 @@
         }
         
         .btn-primary {
-            background-color: #d63384 !important;
-            border-color: #d63384 !important;
+            background-color: #64b458 !important;
+            border-color: #64b458 !important;
         }
 
         .btn:hover {
-            background-color: black !important;
-            border-color: black !important;
+            font-weight: bolder;
+            background-color: #5d9861 !important;
+            border-color: #5d9861 !important;
         }
     </style>
     <!-- Bootstrap JS -->

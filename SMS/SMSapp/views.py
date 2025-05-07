@@ -30,6 +30,7 @@ def logout(request):
     messages.success(request, ("You have been logged out"))
     return redirect("login")
 
+# change username and password
 @login_required
 def reset(request):
     user = request.user
@@ -53,3 +54,23 @@ def reset(request):
         return redirect('home')
 
     return render(request, 'reset.html')
+
+# student record
+def studentlist(request):
+    return render(request, 'studentlist.html')
+
+# student grouping
+def studgroup(request):
+    return render(request, 'studgroup.html')
+
+# performance analysis
+def perfanalysis(request):
+    return render(request, 'perfanalysis.html')
+
+# class management
+def classman(request):
+    return render(request, 'classman.html')
+
+# drop out risk prediction
+def droprisk(request):
+    return render(request, 'droprisk.html')

@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Student Record</title>
+    <title>Student Grouping and Profiling</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="{% static 'script.js' %}"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +36,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{% url 'studentlist' %}" class="sidebar-link active">
+                    <a href="{% url 'studentlist' %}" class="sidebar-link">
                         <img src="{% static 'icons/records.png' %}" alt="Student Management" class="me-3" style="max-width: 40px;">
                         <span>Student Record</span>
                     </a>
@@ -55,7 +55,7 @@
                     </a>
                     <ul id="smart" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="{% url 'studgroup' %}" class="sidebar-link">
+                            <a href="{% url 'studgroup' %}" class="sidebar-link active">
                                 <img src="{% static 'icons/group.png' %}" alt="Student Grouping and Profiling" class="me-3" style="max-width: 40px;">
                                 <span>Student Grouping & Profiling</span>
                             </a>
@@ -110,7 +110,7 @@
             <main class="p-3 d-flex flex-column justify-content-between" style="min-height: 80vh;">
                 <div class="container-fluid">
                     <div class="mb-3 text-center">
-                        <h1>Student Record</h1>
+                        <h1>Student Grouping and Profiling</h1>
                     </div>
                 </div>
 

@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Student Record</title>
+    <title>Performance Analysis</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="{% static 'script.js' %}"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +36,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{% url 'studentlist' %}" class="sidebar-link active">
+                    <a href="{% url 'studentlist' %}" class="sidebar-link">
                         <img src="{% static 'icons/records.png' %}" alt="Student Management" class="me-3" style="max-width: 40px;">
                         <span>Student Record</span>
                     </a>
@@ -67,7 +67,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'perfanalysis' %}" class="sidebar-link">
+                            <a href="{% url 'perfanalysis' %}" class="sidebar-link active">
                                 <img src="{% static 'icons/performance.png' %}" alt="Performance Prediction" class="me-3" style="max-width: 40px;">
                                 <span>Performance Analysis</span>
                             </a>
@@ -110,7 +110,7 @@
             <main class="p-3 d-flex flex-column justify-content-between" style="min-height: 80vh;">
                 <div class="container-fluid">
                     <div class="mb-3 text-center">
-                        <h1>Student Record</h1>
+                        <h1>Performance Analysis</h1>
                     </div>
                 </div>
 
