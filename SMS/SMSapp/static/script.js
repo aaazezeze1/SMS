@@ -1,3 +1,4 @@
+// for sidebar toggle feature
 document.addEventListener("DOMContentLoaded", function () {
     const toggler = document.querySelector(".toggler-btn");
 
