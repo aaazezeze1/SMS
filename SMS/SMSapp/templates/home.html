@@ -13,60 +13,82 @@
     <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Top Title Bar -->
+    <div class="topbar bg-white text-dark p-3 d-flex align-items-center">
+        <a href="#" class="d-flex align-items-center text-decoration-none">
+            <img src="{% static 'icons/logo.png' %}" alt="LSPU Logo" class="me-3" style="max-width: 60px;">
+            <span class="fw-bold fs-5">LSPU Student Management System</span>
+        </a>
+    </div>
     <div class="d-flex">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar-toggle">
-            <div class="sidebar-logo">
-                <a href="#"><img src="{% static 'icons/logo.png' %}" alt="LSPU Logo">LSPU SMS</a>
-            </div>
             <br>
             <!-- Sidebar Navigation -->
             <ul class="sidebar-nav p-0">
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
+                        <img src="{% static 'icons/dashboard.png' %}" alt="Dashboard" class="me-3" style="max-width: 40px;">
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
+                        <img src="{% static 'icons/records.png' %}" alt="Student Management" class="me-3" style="max-width: 40px;">
                         <span>Student Management</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
+                        <img src="{% static 'icons/class.png' %}" alt="Class Management" class="me-3" style="max-width: 40px;">
                         <span>Class Management</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#smart" aria-expanded="true" aria-controls="smart">
-                        <i class="lni lni-protection"></i>
+                        <img src="{% static 'icons/analytics.png' %}" alt="SMART Analytics" class="me-3" style="max-width: 40px;">
                         <span>SMART Analytics</span>
                     </a>
                     <ul id="smart" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Student Grouping & Profiling</a>
+                            <a href="#" class="sidebar-link">
+                                <img src="{% static 'icons/group.png' %}" alt="Student Grouping and Profiling" class="me-3" style="max-width: 40px;">
+                                <span>Student Grouping & Profiling</span>
+                            </a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Drop Out Risk Prediction</a>
+                            <a href="#" class="sidebar-link">
+                                <img src="{% static 'icons/risk.png' %}" alt="Drop Out Risk Prediction" class="me-3" style="max-width: 40px;">
+                                <span>Drop Out Risk Prediction</span>
+                            </a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Performance Prediction</a>
+                            <a href="#" class="sidebar-link">
+                                <img src="{% static 'icons/performance.png' %}" alt="Performance Prediction" class="me-3" style="max-width: 40px;">
+                                <span>Performance Prediction</span>
+                            </a>
                         </li>
                     </ul>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#setting" aria-expanded="true" aria-controls="setting">
-                        <i class="lni lni-protection"></i>
+                        <img src="{% static 'icons/settings.png' %}" alt="Settings" class="me-3" style="max-width: 40px;">
                         <span>Settings</span>
                     </a>
                     <ul id="setting" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="{% url 'reset' %}" class="sidebar-link">Change Username & Password</a>
+                            <a href="{% url 'reset' %}" class="sidebar-link">
+                                <img src="{% static 'icons/change.png' %}" alt="Change Username and Password" class="me-3" style="max-width: 40px;">
+                                <span>Change Username & Password</span>
+                            </a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'logout' %}" class="sidebar-link">Logout</a>
+                            <a href="{% url 'logout' %}" class="sidebar-link">
+                                <img src="{% static 'icons/logout.png' %}" alt="Logout" class="me-3" style="max-width: 40px;">
+                                <span>Logout</span>
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -102,6 +124,7 @@
 
         a {
             text-decoration: none;
+            color: #d63384;
         }
 
         .main{
