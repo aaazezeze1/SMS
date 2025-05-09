@@ -112,9 +112,32 @@
                 <div class="container-fluid">
                     <div class="mb-3 text-center">
                         <h1>Student Record</h1>
+                        <br>
+                        <table class="table table-bordered" id="studentTable">
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th><th>Name</th><th>Contact</th><th>Address</th><th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr data-id="{{ student.id }}">
+                                    <td contenteditable="true" class="student_id">{{ student.student_id }}</td>
+                                    <td contenteditable="true" class="name">{{ student.name }}</td>
+                                    <td contenteditable="true" class="contact">{{ student.contact }}</td>
+                                    <td contenteditable="true" class="address">{{ student.address }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick="editStudent('{{ student.id }}')">Save</button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteStudent('{{ student.id }}')">Delete</button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <button class="btn btn-success" id="add-student-btn">Add Student</button>
                     </div>
                 </div>
-
+                <!-- Bottom part -->
                 <div class="container mt-auto">
                     <div class="row justify-content-center">
                         
@@ -126,6 +149,18 @@
     <style>
         * {
             font-family: "Ubuntu", sans-serif;
+        }
+
+        /* prevent table resizing by width instead of height based on table data text length */
+        table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        td {
+            word-wrap: break-word;
+            white-space: normal;
+            vertical-align: top;
         }
 
         li {
@@ -246,12 +281,13 @@
             transition: all 0.2s ease-out;
         }
 
-        .btn {
+        /* make buttons color green except the danger button of bootstrap */
+        .btn:not(.btn-danger) {
             background-color: #64b458 !important;
             border-color: #64b458 !important;
         }
 
-        .btn:hover {
+        .btn:not(.btn-danger):hover {
             background-color: #5d9861 !important;
             border-color: #5d9861 !important;
         }
@@ -267,6 +303,73 @@
             }
         }
     </style>
+    <script>
+        // update (edit and save) an existing student data 
+        function editStudent(id) {
+            const row = document.querySelector(`tr[data-id='${id}']`);
+            const data = {
+                student_id: row.cells[0].innerText.trim(),
+                name: row.cells[1].innerText.trim(),
+                contact: row.cells[2].innerText.trim(),
+                address: row.cells[3].innerText.trim(),
+            };
+
+            fetch(`/student/edit/${id}/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(resp => resp.json())
+            .then(() => alert('Student Updated!'))
+            .catch(() => alert('Update Failed'));
+        }
+
+        // delete student function
+        function deleteStudent(id) {
+            fetch(`/student/delete/${id}/`, { method: 'POST' })
+                .then(() => {
+                    document.querySelector(`tr[data-id='${id}']`).remove();
+                    alert('Student Deleted!');
+                })
+                .catch(() => alert('Delete Failed'));
+        }
+
+        // adds new editable table row when "Add Student" button is clicked
+        document.getElementById('add-student-btn').addEventListener('click', () => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="saveNewStudent(this)">Save</button>
+                    <button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Delete</button>
+                </td>
+            `;
+            document.querySelector('#studentTable tbody').appendChild(newRow);
+        });
+
+        // save new student that was added using the "Add Student" button
+        function saveNewStudent(button) {
+            const row = button.closest('tr');
+            const data = {
+                student_id: row.cells[0].innerText.trim(),
+                name: row.cells[1].innerText.trim(),
+                contact: row.cells[2].innerText.trim(),
+                address: row.cells[3].innerText.trim(),
+            };
+
+            fetch('/student/add/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(resp => resp.json())
+            .then(() => alert('New Student Added!'))
+            .catch(() => alert('Add Student Failed'));
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
