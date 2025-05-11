@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+# when new student is created then generate an id
 def generate_student_id():
     today = timezone.now()
     prefix = today.strftime('%m%y')  # e.g., "0525" for May 2025
@@ -22,7 +23,6 @@ class Student(models.Model):
     contact = models.CharField(max_length=20)
     address = models.TextField()
     section = models.CharField(max_length=10, default="BSCS 2A")
-
 
     def save(self, *args, **kwargs):
         if not self.student_id:

@@ -4,12 +4,10 @@ from django.contrib.auth import authenticate, logout as auth_logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
-
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import Student
-
 
 # Create your views here.
 def home(request):
@@ -81,20 +79,6 @@ def classman(request):
 def droprisk(request):
     return render(request, 'droprisk.html')
 
-# access the model Student table data
-# def studentlist(request):
-#     sort_by = request.GET.get('sort_by', 'student_id')
-#     allowed_fields = ['student_id', 'name', 'address']
-
-#     if sort_by not in allowed_fields:
-#         sort_by = 'student_id'
-
-#     students = Student.objects.all().order_by(sort_by)
-#     return render(request, 'studentlist.html', {
-#         'students': students,
-#         'current_sort': sort_by
-#     })
-
 def studentlist(request):
     # Get the section filter from the query string, if provided
     section_filter = request.GET.get('section', None)
@@ -119,8 +103,6 @@ def studentlist(request):
         'current_sort': sort_by,
         'section_filter': section_filter
     })
-
-
 
 # student record table delete student function
 @csrf_exempt
