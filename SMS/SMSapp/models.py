@@ -28,3 +28,16 @@ class Student(models.Model):
         if not self.student_id:
             self.student_id = generate_student_id()
         super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.name
+
+# Attendance model to track attendance for each student
+class Attendance(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)  # Link to Student Class
+    present_days = models.PositiveIntegerField(default=0)
+    excused_days = models.PositiveIntegerField(default=0)
+    absent_days = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Attendance for {self.student.name}"  # Accessing student name

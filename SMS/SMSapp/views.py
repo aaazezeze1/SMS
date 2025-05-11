@@ -7,7 +7,9 @@ from django.contrib.auth import update_session_auth_hash
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.http import Http404
 from .models import Student
+from .models import Attendance
 
 # Create your views here.
 def home(request):
@@ -59,10 +61,6 @@ def reset(request):
 
     return render(request, 'reset.html')
 
-# student record
-def studentlist(request):
-    return render(request, 'studentlist.html')
-
 # student grouping
 def studgroup(request):
     return render(request, 'studgroup.html')
@@ -79,6 +77,7 @@ def classman(request):
 def droprisk(request):
     return render(request, 'droprisk.html')
 
+# student record
 def studentlist(request):
     # Get the section filter from the query string, if provided
     section_filter = request.GET.get('section', None)
@@ -136,13 +135,79 @@ def edit_student(request, id):
 @csrf_exempt
 def add_student(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        student = Student(
-            name=data['name'],
-            contact=data['contact'],
-            address=data['address'],
-            section=data['section']  
-        )
-        student.save()  # student_id is generated here
-        return JsonResponse({'success': True, 'student_id': student.student_id})
+        try:
+            data = json.loads(request.body)
+            student = Student(
+                name=data['name'],
+                contact=data['contact'],
+                address=data['address'],
+                section=data['section']  
+            )
+            student.save()  # student_id is generated here
+            
+            # Create attendance record for the new student
+            Attendance.objects.create(
+                student=student,
+                present_days=0,
+                excused_days=0,
+                absent_days=0
+            )
+            
+            return JsonResponse({
+                'success': True, 
+                'student_id': student.student_id
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
     return JsonResponse({'success': False}, status=400)
+
+
+
+
+def attendance_view(request):
+    # Get the section filter from the GET parameters
+    section_filter = request.GET.get('section', '')  # If no section is selected, it's an empty string
+
+    # Fetch all students and filter by section if the filter is provided
+    if section_filter:
+        students = Student.objects.filter(section=section_filter)
+    else:
+        students = Student.objects.all()  # If no section filter, show all students
+
+    # Fetch the attendance records for the students
+    student_attendance = []
+    for student in students:
+        attendance = Attendance.objects.filter(student=student).first()  # Get the attendance for the student
+        student_attendance.append({
+            'student': student,
+            'attendance': attendance
+        })
+
+    return render(request, "classman.html", {
+        "student_attendance": student_attendance,
+        "section_filter": section_filter,  # Pass the current section filter back to the template
+    })
+
+# edit button on class management attendance table
+def update_attendance(request, student_id):
+    if request.method == 'POST':
+        present_days = request.POST.get('present_days')
+        excused_days = request.POST.get('excused_days')
+        absent_days = request.POST.get('absent_days')
+
+        # Find the attendance object for the student
+        attendance = Attendance.objects.get(student_id=student_id)
+
+        # Update attendance values
+        attendance.present_days = present_days
+        attendance.excused_days = excused_days
+        attendance.absent_days = absent_days
+
+        # Save the changes
+        attendance.save()
+
+        # Redirect to the class management page
+        return redirect('classman')

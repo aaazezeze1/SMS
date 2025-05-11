@@ -121,7 +121,6 @@
                     <button class="btn btn-success" id="add-student-btn" data-bs-toggle="modal" data-bs-target="#addStudentModal">
                         Add Student
                     </button>
-                    
                 </div>
             
                 <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
@@ -238,44 +237,45 @@
         </div>
     </div>
 
-     <!-- Add Student Modal -->
-    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="addStudentForm">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add New Student</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> 
+    <!-- Add Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addStudentForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> 
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" required>
                     </div>
-                    <div class="modal-body">
-                    <!-- student_id is automatically generated -->
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Contact</label>
-                            <input type="text" class="form-control" name="contact" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Address</label>
-                            <textarea class="form-control" name="address" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="section" class="form-label">Section</label>
-                            <select class="form-select" id="section" name="section" required>
-                                <option value="BSCS 2A">BSCS 2A</option>
-                                <option value="BSCS 2B">BSCS 2B</option>
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact</label>
+                        <input type="text" class="form-control" name="contact" required>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Add Student</button>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <textarea class="form-control" name="address" required></textarea>
                     </div>
-                </form>
-            </div>
+                    <div class="mb-3">
+                        <label for="section" class="form-label">Section</label>
+                        <select class="form-select" id="section" name="section" required>
+                            <option value="BSCS 2A">BSCS 2A</option>
+                            <option value="BSCS 2B">BSCS 2B</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Add Student</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
   
     <style>
         * {
@@ -544,36 +544,43 @@
         });
 
         // Handle add student form submission
-        const addStudentModalEl = document.getElementById('addStudentModal');
-const addStudentModal = new bootstrap.Modal(addStudentModalEl);
-
-document.getElementById('add-student-btn').addEventListener('click', () => {
-    addStudentModal.show();
-});
-
 document.getElementById('addStudentForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-
-    const formData = new FormData(this);
+    
+    const form = e.target;
+    const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-
+    
     try {
-        const res = await fetch('/student/add/', {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        const response = await fetch('/student/add/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
             body: JSON.stringify(data)
         });
-        const response = await res.json();
-
-        if (response.success) {
-            alert('Student added successfully! ID: ' + response.student_id);
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
+            modal.hide();
+            
+            // Show success message
+            alert('Student added successfully! ID: ' + result.student_id);
+            
+            // Reload the page to show the new student
             location.reload();
         } else {
-            alert('Failed to add student.');
+            alert('Failed to add student: ' + (result.error || 'Unknown error'));
         }
     } catch (error) {
-        alert('Something went wrong.');
-        console.error(error);
+        console.error('Error:', error);
+        alert('An error occurred while adding the student.');
     }
 });
 
