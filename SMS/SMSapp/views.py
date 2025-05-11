@@ -82,9 +82,45 @@ def droprisk(request):
     return render(request, 'droprisk.html')
 
 # access the model Student table data
+# def studentlist(request):
+#     sort_by = request.GET.get('sort_by', 'student_id')
+#     allowed_fields = ['student_id', 'name', 'address']
+
+#     if sort_by not in allowed_fields:
+#         sort_by = 'student_id'
+
+#     students = Student.objects.all().order_by(sort_by)
+#     return render(request, 'studentlist.html', {
+#         'students': students,
+#         'current_sort': sort_by
+#     })
+
 def studentlist(request):
-    students = Student.objects.all()
-    return render(request, 'studentlist.html', {'students': students})
+    # Get the section filter from the query string, if provided
+    section_filter = request.GET.get('section', None)
+
+    # Get the sorting field from the query string, with 'student_id' as default
+    sort_by = request.GET.get('sort_by', 'student_id')
+    allowed_fields = ['student_id', 'name', 'address']
+
+    # Validate sort_by field
+    if sort_by not in allowed_fields:
+        sort_by = 'student_id'
+
+    # Filter students by section if filter is applied
+    if section_filter:
+        students = Student.objects.filter(section=section_filter).order_by(sort_by)
+    else:
+        students = Student.objects.all().order_by(sort_by)
+
+    # Return the rendered template with students, the current sorting, and section filter
+    return render(request, 'studentlist.html', {
+        'students': students,
+        'current_sort': sort_by,
+        'section_filter': section_filter
+    })
+
+
 
 # student record table delete student function
 @csrf_exempt
@@ -108,6 +144,7 @@ def edit_student(request, id):
             student.name = data.get('name')
             student.contact = data.get('contact')
             student.address = data.get('address')
+            student.section = data.get('section')  
             student.save()
             return JsonResponse({'status': 'updated'})
         except Student.DoesNotExist:
@@ -119,10 +156,11 @@ def add_student(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         student = Student(
-            student_id=data.get('student_id'),
-            name=data.get('name'),
-            contact=data.get('contact'),
-            address=data.get('address'),
+            name=data['name'],
+            contact=data['contact'],
+            address=data['address'],
+            section=data['section']  
         )
-        student.save()
-        return JsonResponse({'status': 'created', 'id': student.id})
+        student.save()  # student_id is generated here
+        return JsonResponse({'success': True, 'student_id': student.student_id})
+    return JsonResponse({'success': False}, status=400)
