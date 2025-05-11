@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <title>Class Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- add icon to web browser tab -->
+    <!-- Add icon to web browser tab -->
     <link rel="shortcut icon" type="lspu-icon" href="{% static 'icons/logo.png' %}">
-    <!-- for the sidebar toggle -->
+    <!-- For the sidebar toggle -->
     <script src="{% static 'script.js' %}"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -128,7 +128,6 @@
                         <div style="max-width: 300px;">
                             <input type="text" id="search" class="form-control" placeholder="Search students...">
                         </div>
-                    
                         <!-- Sorting Dropdown -->
                         <form method="get" id="sortForm" class="d-flex align-items-center">
                             <label for="sort_by" class="me-2 mb-0">Sort by:</label>
@@ -166,7 +165,6 @@
                                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ entry.student.id }}">Edit</button>
                             </td>
                         </tr>
-
                         <!-- Edit Modal -->
                         <div class="modal fade" id="editModal{{ entry.student.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ entry.student.id }}" aria-hidden="true">
                             <div class="modal-dialog">
@@ -282,18 +280,18 @@
             position: relative;
             transition: all 0.35s;
             display: flex;
-            align-items: center; /* vertical align */
-            gap: 0.75rem; /* space between icon and text */
+            align-items: center; /* Vertical align */
+            gap: 0.75rem; /* Space between icon and text */
         }
 
         .sidebar-icon {
-            /* smaller side bar icons */
+            /* Smaller side bar icons */
             width: 24px;
             height: 24px;
             flex-shrink: 0;
         }
 
-        /* sidebar links span text */
+        /* Sidebar links span text */
         .sidebar-link span {
             font-size: 0.95rem;
             font-weight: 500;
@@ -339,7 +337,7 @@
             border-color: #5d9861 !important;
         }
 
-        /* make it responsive */
+        /* Make it responsive */
         @media (max-width:768px) {
             .sidebar-toggle{
                 margin-left: -264px;
@@ -350,38 +348,55 @@
             }
         }
     </style>
+    <script>
+        // Linear Search to search table
+        document.getElementById("search").addEventListener("input", function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#studentTable tbody tr");
 
+            rows.forEach(row => {
+                const name = row.querySelector("td:nth-child(2)").innerText.toLowerCase(); // Name column (index 2)
+                const studentId = row.querySelector("td:nth-child(1)").innerText.toLowerCase(); // ID column (index 1)
+                const address = row.querySelector("td:nth-child(4)").innerText.toLowerCase(); // Address column (index 4)
 
-<script>
-    // Ensure edited attendance is submitted only when save button is clicked
-    document.querySelectorAll('.modal form').forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            // trigger the form submission after saving the data
-            let modal = this.closest('.modal');
-            let formData = new FormData(this);
-            
-            fetch(this.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Close the modal after successful form submission
-                    modal.querySelector('[data-bs-dismiss="modal"]').click();
-                    window.location.reload(); // Reload the page to update the table
+                // Check if any column contains the search term
+                if (name.includes(searchTerm) || studentId.includes(searchTerm) || address.includes(searchTerm)) {
+                    row.style.display = "";
                 } else {
-                    alert('There was an error saving the attendance.');
+                    row.style.display = "none";
                 }
-            })
-            .catch(error => {
-                alert('An error occurred while saving the attendance.');
             });
         });
-    });
 
-        // sort by function
+        // Ensure edited attendance is submitted only when save button is clicked
+        document.querySelectorAll('.modal form').forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Trigger the form submission after saving the data
+                let modal = this.closest('.modal');
+                let formData = new FormData(this);
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Close the modal after successful form submission
+                        modal.querySelector('[data-bs-dismiss="modal"]').click();
+                        window.location.reload(); // Reload the page to update the table
+                    } else {
+                        alert('There was an error saving the attendance.');
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred while saving the attendance.');
+                });
+            });
+        });
+
+        // Sort by function
         document.getElementById("sort_by").addEventListener("change", function () {
             const sortBy = this.value;
             const tableBody = document.querySelector("#studentTable tbody");
@@ -409,10 +424,7 @@
             tableBody.innerHTML = ""; // Clear table
             sortedData.forEach(data => tableBody.appendChild(data.element));
         });
-</script>
-
-
-
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

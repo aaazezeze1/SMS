@@ -164,18 +164,16 @@ def add_student(request):
             }, status=400)
     return JsonResponse({'success': False}, status=400)
 
-
-
-
+# class management table
 def attendance_view(request):
-    # Get the section filter from the GET parameters
+    # Get the section filter 
     section_filter = request.GET.get('section', '')  # If no section is selected, it's an empty string
 
-    # Fetch all students and filter by section if the filter is provided
+    # filter by section else fetch all students
     if section_filter:
         students = Student.objects.filter(section=section_filter)
     else:
-        students = Student.objects.all()  # If no section filter, show all students
+        students = Student.objects.all()
 
     # Fetch the attendance records for the students
     student_attendance = []
@@ -188,7 +186,7 @@ def attendance_view(request):
 
     return render(request, "classman.html", {
         "student_attendance": student_attendance,
-        "section_filter": section_filter,  # Pass the current section filter back to the template
+        "section_filter": section_filter,
     })
 
 # edit button on class management attendance table

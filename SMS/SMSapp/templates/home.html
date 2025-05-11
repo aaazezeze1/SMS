@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- add icon to web browser tab -->
+    <!-- Add icon to web browser tab -->
      <link rel="shortcut icon" type="lspu-icon" href="{% static 'icons/logo.png' %}">
-    <!-- for the sidebar toggle -->
+    <!-- For the sidebar toggle -->
     <script src="{% static 'script.js' %}"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -212,24 +212,24 @@
             position: relative;
             transition: all 0.35s;
             display: flex;
-            align-items: center; /* vertical align */
-            gap: 0.75rem; /* space between icon and text */
+            align-items: center; /* Vertical align */
+            gap: 0.75rem; /* Space between icon and text */
         }
 
         .sidebar-icon {
-            /* smaller side bar icons */
+            /* Smaller side bar icons */
             width: 24px;
             height: 24px;
             flex-shrink: 0;
         }
 
-        /* sidebar links span text */
+        /* Sidebar links span text */
         .sidebar-link span {
             font-size: 0.95rem;
             font-weight: 500;
         }
 
-        /* change color of active link page using active */
+        /* Change color of active link page using active */
         .sidebar-link.active {
             background-color: #6bb8db;
             color: white;
@@ -270,7 +270,7 @@
             border-color: #5d9861 !important;
         }
 
-        /* make it responsive */
+        /* Make it responsive */
         @media (max-width:768px) {
             .sidebar-toggle{
                 margin-left: -264px;
