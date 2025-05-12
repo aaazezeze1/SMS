@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-# when new student is created then generate an id
+# When a new student is created then generate an id
 def generate_student_id():
     today = timezone.now()
     prefix = today.strftime('%m%y')  # e.g., "0525" for May 2025
@@ -41,3 +41,12 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"Attendance for {self.student.name}"  # Accessing student name
+
+# Student grouping
+class Grouping(models.Model):
+    student = models.OneToOneField(Student, on_delete=models.CASCADE)
+    gwa = models.DecimalField(max_digits=4, decimal_places=2)
+    result = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.student.name

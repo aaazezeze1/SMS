@@ -499,11 +499,19 @@
             e.preventDefault();
 
             const formData = new FormData(this);
+            const contact = formData.get('contact');
+
+            // Validate phone number (only digits allowed)
+            if (!/^\d+$/.test(contact)) {
+                alert('Please enter a valid phone number with digits only.');
+                return;
+            }
+
             const id = formData.get('id');
             const data = {
                 student_id: formData.get('student_id'),
                 name: formData.get('name'),
-                contact: formData.get('contact'),
+                contact: contact,
                 address: formData.get('address'),
                 section: formData.get('section')
             };

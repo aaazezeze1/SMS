@@ -10,6 +10,8 @@ import json
 from django.http import Http404
 from .models import Student
 from .models import Attendance
+from .models import Grouping
+
 
 # Create your views here.
 def home(request):
@@ -209,3 +211,86 @@ def update_attendance(request, student_id):
 
         # Redirect to the class management page
         return redirect('classman')
+    
+# Student Grouping and Profiling
+def studgroup(request):
+    section_filter = request.GET.get('section', '')
+    
+    students = Student.objects.all()
+    if section_filter:
+        students = students.filter(section=section_filter)
+
+    student_data = []
+    for student in students:
+        try:
+            # Get existing data
+            grouping = Grouping.objects.get(student=student)
+            gwa = grouping.gwa
+            result = grouping.result
+        except Grouping.DoesNotExist:
+            gwa = 0.00  # Default GWA
+            result = "Failed"  # Default result
+            
+            # Create the grouping record if it doesn't exist
+            Grouping.objects.get_or_create(
+                student=student,
+                defaults={
+                    'gwa': gwa,
+                    'result': result
+                }
+            )
+        
+        student_data.append({
+            'student': student,
+            'gwa': gwa,
+            'result': result
+        })
+    
+    context = {
+        'student_data': student_data,
+        'section_filter': section_filter,
+    }
+    return render(request, 'studgroup.html', context)
+
+# Update GWA button
+@csrf_exempt
+def update_gwa(request):
+    if request.method == 'POST':
+        try:
+            student_id = request.POST.get('student_id')
+            new_gwa = request.POST.get('gwa')
+
+            gwa_float = float(new_gwa)
+
+            if gwa_float < 0 or gwa_float > 5:
+                messages.error(request, "Invalid GWA: must be between 0.00 and 5.00")
+                return redirect('studgroup')
+
+            grouping = Grouping.objects.get(student_id=student_id)
+            grouping.gwa = new_gwa
+
+            # Grade result logic
+            if gwa_float <= 1.25:
+                grouping.result = 'Excellent'
+            elif gwa_float <= 1.75:
+                grouping.result = 'Very Satisfactory'
+            elif gwa_float <= 2.25:
+                grouping.result = 'Satisfactory'
+            elif gwa_float <= 3.0:
+                grouping.result = 'Fairly Satisfactory'
+            else:
+                grouping.result = 'Failed'
+
+            grouping.save()
+
+            messages.success(request, "GWA updated successfully!")
+            return redirect('studgroup')
+
+        except ValueError:
+            messages.error(request, "Invalid input: GWA must be a number.")
+            return redirect('studgroup')
+        except Exception as e:
+            messages.error(request, f"Error updating GWA: {str(e)}")
+            return redirect('studgroup')
+
+    return redirect('studgroup')
