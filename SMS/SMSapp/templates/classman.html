@@ -190,7 +190,7 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                            <button type="submit" id="savechanges-btn-modal" class="btn btn-primary">Save changes</button>
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </div>
@@ -327,12 +327,23 @@
             transition: all 0.2s ease-out;
         }
 
-        .btn {
+        .btn:not(.btn-danger) {
+            background-color: #6c757d !important; 
+            border-color: #6c757d !important;
+            color: #fff !important;
+        }
+
+        .btn:not(.btn-danger):hover {
+            background-color: #5c636a !important; 
+            border-color: #5c636a !important;
+        }
+
+        #savechanges-btn-modal {
             background-color: #64b458 !important;
             border-color: #64b458 !important;
         }
 
-        .btn:hover {
+        #savechanges-btn-modal:hover {
             background-color: #5d9861 !important;
             border-color: #5d9861 !important;
         }

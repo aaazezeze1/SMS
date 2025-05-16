@@ -219,7 +219,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary"  id="savechanges-btn-modal">Save changes</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -259,7 +259,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success">Add Student</button>
+                        <button type="submit" id="add-student-btn-modal" class="btn btn-success">Add Student</button>
                     </div>
                 </form>
             </div>
@@ -402,11 +402,43 @@
 
         /* Make buttons color green except the danger button of bootstrap */
         .btn:not(.btn-danger) {
+            background-color: #6c757d !important; 
+            border-color: #6c757d !important;
+            color: #fff !important;
+        }
+
+        .btn:not(.btn-danger):hover {
+            background-color: #5c636a !important; 
+            border-color: #5c636a !important;
+        }
+
+        #add-student-btn {
+            background-color: #6bb8db !important;
+            border-color: #6bb8db !important;
+            color: #fff !important;
+        }
+
+        #add-student-btn:hover {
+            background-color: #5c6587 !important;
+            border-color: #5c6587 !important;
+        }
+
+        #add-student-btn-modal {
             background-color: #64b458 !important;
             border-color: #64b458 !important;
         }
 
-        .btn:not(.btn-danger):hover {
+        #add-student-btn-modal:hover {
+            background-color: #5d9861 !important;
+            border-color: #5d9861 !important;
+        }
+
+        #savechanges-btn-modal {
+            background-color: #64b458 !important;
+            border-color: #64b458 !important;
+        }
+
+        #savechanges-btn-modal:hover {
             background-color: #5d9861 !important;
             border-color: #5d9861 !important;
         }
