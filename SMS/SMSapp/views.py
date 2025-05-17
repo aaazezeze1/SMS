@@ -72,7 +72,7 @@ def perfanalysis(request):
     return render(request, 'perfanalysis.html')
 
 # class management
-def classman(request):
+def academics(request):
     return render(request, 'academics.html')
 
 # drop out risk prediction
