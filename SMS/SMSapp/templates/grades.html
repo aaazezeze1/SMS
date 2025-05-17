@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Drop Out Risk Prediction</title>
+    <title>Class Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Add icon to web browser tab -->
     <link rel="shortcut icon" type="lspu-icon" href="{% static 'icons/logo.png' %}">
@@ -64,7 +64,7 @@
                             </a>
                         </li>
                     </ul>
-                </li>                                       
+                </li>                                
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#smart" aria-expanded="true" aria-controls="smart">
@@ -79,7 +79,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'droprisk' %}" class="sidebar-link active">
+                            <a href="{% url 'droprisk' %}" class="sidebar-link">
                                 <img src="{% static 'icons/risk.png' %}" alt="Drop Out Risk Prediction" class="me-3" style="max-width: 40px;">
                                 <span>Drop Out Risk Prediction</span>
                             </a>
@@ -116,174 +116,132 @@
             </ul>
         </aside>
         <!-- Sidebar Ends -->
-        <!-- Main Component -->
-        <div class="main">
-            <nav class="navbar navbar-expand">
-                <button class="toggler-btn" type="button">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(0 0 0)">
-                        <path d="M20 7.125L4 7.125C3.37868 7.125 2.875 6.62132 2.875 6C2.875 5.37868 3.37868 4.875 4 4.875L20 4.875C20.6213 4.875 21.125 5.37868 21.125 6C21.125 6.62132 20.6213 7.125 20 7.125ZM20 13.125L4 13.125C3.37868 13.125 2.875 12.6213 2.875 12C2.875 11.3787 3.37868 10.875 4 10.875L20 10.875C20.6213 10.875 21.125 11.3787 21.125 12C21.125 12.6213 20.6213 13.125 20 13.125ZM20 19.125L4 19.125C3.37868 19.125 2.875 18.6213 2.875 18C2.875 17.3787 3.37868 16.875 4 16.875L20 16.875C20.6213 16.875 21.125 17.3787 21.125 18C21.125 18.6213 20.6213 19.125 20 19.125Z" fill="#000000"/>
-                    </svg>                
-                </button>
-            </nav>
-            <main class="p-3 d-flex flex-column justify-content-between" style="min-height: 80vh;">
-                <div class="container-fluid">
-                    <div class="mb-3 text-center">
-                        <h1>Drop Out Risk Prediction</h1>
-                    </div>
-                </div>
 
-                <div class="container mt-auto">
-                    <div class="row justify-content-center">
-                        
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
-    <style>
-        * {
-            font-family: "Ubuntu", sans-serif;
-        }
-
-        li {
-            list-style: none;
-        }
-
-        a {
-            text-decoration: none;
-            color: black;
-        }
-
-        .main{
-            min-height: 100vh;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        #sidebar{
-            max-width: 264px;
-            min-width: 264px;
-            transition: all 0.35s ease-in-out;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #sidebar.collapsed {
-            margin-left: -264px;
-        }
-
-        .toggler-btn {
-            background-color: transparent;
-            cursor: pointer;
-            border: 0;
-        }
-
-        .toggler-btn i {
-            font-size: 1.5rem;
-            color: white;
-            font-weight: bold;
-        }
-
-        .navbar {
-            padding: 1.15rem 1.5rem;
-        }
-
-        .sidebar-nav {
-            flex: 1 1 auto;
-        }
-
-        .sidebar-logo {
-            padding: 1.15 rem 1.5rem;
-            text-align: center;
-        }
-
-        .sidebar-logo a{
-            color: black;
-            font-weight: 800;
-            font-size: 1.25rem;
-        }
-
-        .sidebar-header{
-            color: white;
-            font-size: .75rem;
-            padding: 1.5rem 1.5rem .375rem;
-        }
-
-        a.sidebar-link{
-            padding: .625rem 1.625rem;
-            color: black;
-            position: relative;
-            transition: all 0.35s;
-            display: flex;
-            align-items: center; /* Vertical align */
-            gap: 0.75rem; /* Space between icon and text */
-        }
-
-        .sidebar-icon {
-            /* Smaller side bar icons */
-            width: 24px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-
-        /* Sidebar links span text */
-        .sidebar-link span {
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .sidebar-link.active {
-            background-color: #6bb8db;
-            color: white;
-            font-weight: bolder;
-        }
-
-        a.sidebar-link:hover {
-            font-weight: bolder;
-            color: white;
-            background-color: #6bb8db;
-        }
-
-        .sidebar-link[data-bs-toggle="collapse"]::after{
-            border: solid;
-            border-width: 0 .075rem .075rem 0;
-            content: "";
-            display: inline-block;
-            padding: 2px;
-            position: absolute;
-            right: 1.5rem;
-            top: 1.4rem;
-            transform: rotate(-135deg);
-            transition: all 0.2s ease-out;
-        }
-
-        .sidebar-link[data-bs-toggle="collapse"].collapsed::after{
-            transform: rotate(45deg);
-            transition: all 0.2s ease-out;
-        }
-
-        .btn {
-            background-color: #64b458 !important;
-            border-color: #64b458 !important;
-        }
-
-        .btn:hover {
-            background-color: #5d9861 !important;
-            border-color: #5d9861 !important;
-        }
-
-        /* Make it responsive */
-        @media (max-width:768px) {
-            .sidebar-toggle{
+        <style>
+            * {
+                font-family: "Ubuntu", sans-serif;
+            }
+    
+            li {
+                list-style: none;
+            }
+    
+            a {
+                text-decoration: none;
+                color: black;
+            }
+    
+            .main{
+                min-height: 100vh;
+                width: 100%;
+                overflow: hidden;
+            }
+    
+            #sidebar{
+                max-width: 264px;
+                min-width: 264px;
+                transition: all 0.35s ease-in-out;
+                background-color: white;
+                display: flex;
+                flex-direction: column;
+            }
+    
+            #sidebar.collapsed {
                 margin-left: -264px;
             }
-
-            #sidebar.collapsed {
-                margin-left: 0;
+    
+            .toggler-btn {
+                background-color: transparent;
+                cursor: pointer;
+                border: 0;
             }
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+            .toggler-btn i {
+                font-size: 1.5rem;
+                color: white;
+                font-weight: bold;
+            }
+    
+            .navbar {
+                padding: 1.15rem 1.5rem;
+            }
+    
+            .sidebar-nav {
+                flex: 1 1 auto;
+            }
+    
+            .sidebar-logo {
+                padding: 1.15 rem 1.5rem;
+                text-align: center;
+            }
+    
+            .sidebar-logo a{
+                color: black;
+                font-weight: 800;
+                font-size: 1.25rem;
+            }
+    
+            .sidebar-header{
+                color: white;
+                font-size: .75rem;
+                padding: 1.5rem 1.5rem .375rem;
+            }
+    
+            a.sidebar-link{
+                padding: .625rem 1.625rem;
+                color: black;
+                position: relative;
+                transition: all 0.35s;
+                display: flex;
+                align-items: center; /* Vertical align */
+                gap: 0.75rem; /* Space between icon and text */
+            }
+    
+            .sidebar-icon {
+                /* Smaller side bar icons */
+                width: 24px;
+                height: 24px;
+                flex-shrink: 0;
+            }
+    
+            /* Sidebar links span text */
+            .sidebar-link span {
+                font-size: 0.95rem;
+                font-weight: 500;
+            }
+    
+            .sidebar-link.active {
+                background-color: #6bb8db;
+                color: white;
+                font-weight: bolder;
+            }
+    
+            a.sidebar-link:hover {
+                font-weight: bolder;
+                color: white;
+                background-color: #6bb8db;
+            }
+    
+            .sidebar-link[data-bs-toggle="collapse"]::after{
+                border: solid;
+                border-width: 0 .075rem .075rem 0;
+                content: "";
+                display: inline-block;
+                padding: 2px;
+                position: absolute;
+                right: 1.5rem;
+                top: 1.4rem;
+                transform: rotate(-135deg);
+                transition: all 0.2s ease-out;
+            }
+    
+            .sidebar-link[data-bs-toggle="collapse"].collapsed::after{
+                transform: rotate(45deg);
+                transition: all 0.2s ease-out;
+            }
+        </style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

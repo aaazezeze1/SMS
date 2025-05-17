@@ -73,7 +73,7 @@ def perfanalysis(request):
 
 # class management
 def classman(request):
-    return render(request, 'classman.html')
+    return render(request, 'academics.html')
 
 # drop out risk prediction
 def droprisk(request):
@@ -186,12 +186,12 @@ def attendance_view(request):
             'attendance': attendance
         })
 
-    return render(request, "classman.html", {
+    return render(request, "academics.html", {
         "student_attendance": student_attendance,
         "section_filter": section_filter,
     })
 
-# edit button on class management attendance table
+# edit button on academics attendance table
 def update_attendance(request, student_id):
     if request.method == 'POST':
         present_days = request.POST.get('present_days')
@@ -210,8 +210,12 @@ def update_attendance(request, student_id):
         attendance.save()
 
         # Redirect to the class management page
-        return redirect('classman')
-    
+        return redirect('academics')
+
+#Student grades
+def grades_view(request):
+    return render(request, "grades.html") 
+
 # Student Grouping and Profiling
 def studgroup(request):
     section_filter = request.GET.get('section', '')

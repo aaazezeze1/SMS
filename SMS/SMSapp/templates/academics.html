@@ -45,11 +45,26 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{% url 'classman' %}" class="sidebar-link active">
-                        <img src="{% static 'icons/class.png' %}" alt="Class Management" class="me-3" style="max-width: 40px;">
-                        <span>Class Management</span>
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#academics" aria-expanded="false" aria-controls="academics">
+                        <img src="{% static 'icons/class.png' %}" alt="Academics" class="me-3" style="max-width: 40px;">
+                        <span>Academics</span>
                     </a>
-                </li>
+                    <ul id="academics" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'classman' %}" class="sidebar-link">
+                                <img src="{% static 'icons/attendance.png' %}" alt="Attendance" class="me-3" style="max-width: 40px;">
+                                <span>Attendance</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'grades' %}" class="sidebar-link">
+                                <img src="{% static 'icons/grades.png' %}" alt="Grades" class="me-3" style="max-width: 40px;">
+                                <span>Grades</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>                                
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#smart" aria-expanded="true" aria-controls="smart">
@@ -108,7 +123,7 @@
             </nav>
             <main class="p-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h1 class="mb-0">Class Management</h1>
+                    <h1 class="mb-0">Attendance</h1>
                 </div>
                 <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
                     <!-- Section Filter (aligned left) -->

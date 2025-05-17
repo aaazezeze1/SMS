@@ -6,9 +6,10 @@ urlpatterns = [
     path("", views.login, name="login"),
     path("home/", views.home, name="home"),
     path("logout/", views.logout, name="logout"),
-    # Url edit table method and class management
-    path("classman/", views.attendance_view, name="classman"),
-    path('classman/update_attendance/<int:student_id>/', views.update_attendance, name='update_attendance'),
+    # Url edit table method and academics (attendance and grades)
+    path("academics/", views.attendance_view, name="academics"),
+    path('academics/update_attendance/<int:student_id>/', views.update_attendance, name='update_attendance'),
+    path("grades/", views.grades_view, name="grades"),
     # Url for edit gwa button in student grouping
     path("studgroup/", views.studgroup, name="studgroup"),
     path('update-gwa/', views.update_gwa, name='update_gwa'),
