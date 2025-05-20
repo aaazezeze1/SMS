@@ -31,16 +31,30 @@ class Student(models.Model):
     
     def __str__(self):
         return self.name
+    
+# Subject model
+class Subject(models.Model):
+    code = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.code} - {self.name}"
+
 
 # Attendance model to track attendance for each student
 class Attendance(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)  # Link to Student Class
-    present_days = models.PositiveIntegerField(default=0)
-    excused_days = models.PositiveIntegerField(default=0)
-    absent_days = models.PositiveIntegerField(default=0)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, default=1)
+    present_days = models.IntegerField(default=0)
+    excused_days = models.IntegerField(default=0)
+    absent_days = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ('student', 'subject')
 
     def __str__(self):
-        return f"Attendance for {self.student.name}"  # Accessing student name
+        return f"{self.student.name} - {self.subject.code}"
+
 
 # Student grouping
 class Grouping(models.Model):

@@ -153,6 +153,19 @@
                         </form>
                     </div>
                 </div>
+                <!-- Dropdown control for Su nbjects -->
+                <div style="max-width: 450px; margin-bottom: 1rem;">
+                    <label for="subjectSelect" class="form-label mb-0">Filter by Subject:</label>
+                    <form method="GET" action="{% url 'academics' %}">
+                        <select id="subjectSelect" name="subject" class="form-select" onchange="this.form.submit()">
+                            {% for subject in subjects %}
+                                <option value="{{ subject.code }}" {% if subject.code == subject_filter %}selected{% endif %}>
+                                    {{ subject.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>         
                 <!-- Table -->
                 <div class="table-responsive text-center">
                 <table class="table table-bordered" id="studentTable">
@@ -181,37 +194,40 @@
                             </td>
                         </tr>
                         <!-- Edit Modal -->
-                        <div class="modal fade" id="editModal{{ entry.student.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ entry.student.id }}" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <form method="post" action="{% url 'update_attendance' entry.student.id %}">
-                                    {% csrf_token %}
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel{{ entry.student.id }}">Edit Attendance for {{ entry.student.name }}</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="present_days{{ entry.student.id }}" class="form-label">Present Days</label>
-                                                <input type="number" class="form-control" id="present_days{{ entry.student.id }}" name="present_days" value="{{ entry.attendance.present_days }}">
+                            <div class="modal fade" id="editModal{{ entry.student.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ entry.student.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <form action="{% url 'update_attendance' student_id=entry.student.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <!-- Hidden input to send the selected subject -->
+                                        <input type="hidden" name="subject" value="{{ selected_subject }}">
+                                        
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editModalLabel{{ entry.student.id }}">Edit Attendance for {{ entry.student.name }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="excused_days{{ entry.student.id }}" class="form-label">Excused Days</label>
-                                                <input type="number" class="form-control" id="excused_days{{ entry.student.id }}" name="excused_days" value="{{ entry.attendance.excused_days }}">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="present_days{{ entry.student.id }}" class="form-label">Present Days</label>
+                                                    <input type="number" class="form-control" id="present_days{{ entry.student.id }}" name="present_days" value="{{ entry.attendance.present_days }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="excused_days{{ entry.student.id }}" class="form-label">Excused Days</label>
+                                                    <input type="number" class="form-control" id="excused_days{{ entry.student.id }}" name="excused_days" value="{{ entry.attendance.excused_days }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="absent_days{{ entry.student.id }}" class="form-label">Absent Days</label>
+                                                    <input type="number" class="form-control" id="absent_days{{ entry.student.id }}" name="absent_days" value="{{ entry.attendance.absent_days }}">
+                                                </div>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="absent_days{{ entry.student.id }}" class="form-label">Absent Days</label>
-                                                <input type="number" class="form-control" id="absent_days{{ entry.student.id }}" name="absent_days" value="{{ entry.attendance.absent_days }}">
+                                            <div class="modal-footer">
+                                                <button type="submit" id="savechanges-btn-modal" class="btn btn-primary">Save changes</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" id="savechanges-btn-modal" class="btn btn-primary">Save changes</button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -408,19 +424,31 @@
                     body: formData
                 })
                 .then(response => {
-                    if (response.ok) {
-                        // Close the modal after successful form submission
-                        modal.querySelector('[data-bs-dismiss="modal"]').click();
-                        window.location.reload(); // Reload the page to update the table
-                    } else {
-                        alert('There was an error saving the attendance.');
+                    return response.text(); // use text() instead of json() temporarily
+                })
+                .then(text => {
+                    console.log("Raw response:", text); // Debug what you actually received
+
+                    try {
+                        const data = JSON.parse(text); // try parsing it as JSON
+                        if (data.success) {
+                            modal.querySelector('[data-bs-dismiss="modal"]').click();
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + (data.error || 'There was an error saving the attendance.'));
+                        }
+                    } catch (e) {
+                        alert("Server returned invalid JSON. Check console for details.");
+                        console.error("Failed to parse JSON:", text);
                     }
                 })
                 .catch(error => {
-                    alert('An error occurred while saving the attendance.');
+                    console.error('Fetch error:', error);
+                    alert('Fetch Error: ' + error.message);
                 });
             });
         });
+
 
         // Sort by function
         document.getElementById("sort_by").addEventListener("change", function () {

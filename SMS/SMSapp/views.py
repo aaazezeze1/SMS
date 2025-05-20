@@ -11,6 +11,14 @@ from django.http import Http404
 from .models import Student
 from .models import Attendance
 from .models import Grouping
+from .models import Student, Attendance, Subject
+from .models import Attendance, Subject
+from .models import Subject
+from django.http import JsonResponse
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 # Create your views here.
@@ -168,49 +176,86 @@ def add_student(request):
 
 # class management table
 def attendance_view(request):
-    # Get the section filter 
-    section_filter = request.GET.get('section', '')  # If no section is selected, it's an empty string
+    section_filter = request.GET.get('section', '')  # filter by section
+    subject_filter = request.GET.get('subject', '')  # filter by subject
 
-    # filter by section else fetch all students
+    # Fetch all subjects for dropdown
+    subjects = Subject.objects.all()
+
+    # Filter students by section if any
     if section_filter:
         students = Student.objects.filter(section=section_filter)
     else:
         students = Student.objects.all()
 
-    # Fetch the attendance records for the students
     student_attendance = []
+
     for student in students:
-        attendance = Attendance.objects.filter(student=student).first()  # Get the attendance for the student
+        # Filter attendance by student AND subject if subject filter is applied
+        if subject_filter:
+            attendance = Attendance.objects.filter(student=student, subject__code=subject_filter).first()
+        else:
+            # fallback to any attendance record for student (if no subject filter)
+            attendance = Attendance.objects.filter(student=student).first()
+
         student_attendance.append({
             'student': student,
             'attendance': attendance
         })
 
     return render(request, "academics.html", {
-        "student_attendance": student_attendance,
-        "section_filter": section_filter,
-    })
+    "student_attendance": student_attendance,
+    "section_filter": section_filter,
+    "subjects": subjects,
+    "subject_filter": subject_filter,
+    "selected_subject": subject_filter,  # <-- THIS LINE is important
+})
 
 # edit button on academics attendance table
+@csrf_exempt
 def update_attendance(request, student_id):
     if request.method == 'POST':
-        present_days = request.POST.get('present_days')
-        excused_days = request.POST.get('excused_days')
-        absent_days = request.POST.get('absent_days')
+        try:
+            present_days = int(request.POST.get('present_days', 0))
+            excused_days = int(request.POST.get('excused_days', 0))
+            absent_days = int(request.POST.get('absent_days', 0))
+            subject_code = request.POST.get('subject')
 
-        # Find the attendance object for the student
-        attendance = Attendance.objects.get(student_id=student_id)
+            if not subject_code:
+                return JsonResponse({'error': 'Subject code is missing'}, status=400)
 
-        # Update attendance values
-        attendance.present_days = present_days
-        attendance.excused_days = excused_days
-        attendance.absent_days = absent_days
+            subject = Subject.objects.get(code=subject_code)
+            student = Student.objects.get(id=student_id)
 
-        # Save the changes
-        attendance.save()
+            attendance, created = Attendance.objects.get_or_create(
+                student=student,
+                subject=subject,
+                defaults={
+                    'present_days': 0,
+                    'excused_days': 0,
+                    'absent_days': 0
+                }
+            )
 
-        # Redirect to the class management page
-        return redirect('academics')
+            attendance.present_days = present_days
+            attendance.excused_days = excused_days
+            attendance.absent_days = absent_days
+            attendance.save()
+
+            return JsonResponse({'success': True})
+
+        except Subject.DoesNotExist:
+            return JsonResponse({'error': 'Subject not found'}, status=404)
+        except Student.DoesNotExist:
+            return JsonResponse({'error': 'Student not found'}, status=404)
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error updating attendance: {str(e)}")
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 #Student grades
 def grades_view(request):
