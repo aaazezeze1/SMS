@@ -9,7 +9,9 @@ urlpatterns = [
     # Url edit table method and academics (attendance and grades)
     path("academics/", views.attendance_view, name="academics"),
     path('academics/update_attendance/<int:student_id>/', views.update_attendance, name='update_attendance'),
-    path("grades/", views.grades_view, name="grades"),
+    path("grades/", views.grades_view, name="grades_view"),
+    path('grades/', views.grades_view, name='grades'),
+    path('update-grades/', views.update_grades, name='update_grades'),
     # Url for edit gwa button in student grouping
     path("studgroup/", views.studgroup, name="studgroup"),
     path('update-gwa/', views.update_gwa, name='update_gwa'),

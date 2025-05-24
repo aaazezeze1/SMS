@@ -28,6 +28,15 @@ class Student(models.Model):
         if not self.student_id:
             self.student_id = generate_student_id()
         super().save(*args, **kwargs)
+
+    def calculate_gwa(self):
+        grades = Grade.objects.filter(student=self)
+        if not grades.exists():
+            return None  # or 0.0 if you prefer
+
+        total = sum(grade.final_grade for grade in grades)
+        return total / grades.count()
+    
     
     def __str__(self):
         return self.name
@@ -54,6 +63,18 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.student.name} - {self.subject.code}"
+    
+# Grades model
+class Grade(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    final_grade = models.DecimalField(max_digits=5, decimal_places=2)
+
+    class Meta:
+        unique_together = ('student', 'subject')
+
+    def __str__(self):
+        return f"{self.student.name} - {self.subject.code}: {self.final_grade}"
 
 
 # Student grouping

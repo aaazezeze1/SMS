@@ -14,7 +14,9 @@ from .models import Grouping
 from .models import Student, Attendance, Subject
 from .models import Attendance, Subject
 from .models import Subject
+from .models import Student, Subject, Grade
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 import logging
 
 logger = logging.getLogger(__name__)
@@ -162,6 +164,16 @@ def add_student(request):
                 excused_days=0,
                 absent_days=0
             )
+
+            # Create grade record for the new student
+            Grade.objects.create(
+                student=student,
+                cmsc204=50.0,
+                csel301=50.0,
+                csel302=50.0,
+                itec106=50.0,
+                gwa=50.0
+            )
             
             return JsonResponse({
                 'success': True, 
@@ -257,9 +269,84 @@ def update_attendance(request, student_id):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
-#Student grades
+
+#Student grades - i think this should display the students id, name, and section for the grades table?
 def grades_view(request):
-    return render(request, "grades.html") 
+    section_filter = request.GET.get('section', '')
+
+    # Filter students by section if any
+    if section_filter:
+        students = Student.objects.filter(section=section_filter)
+    else:
+        students = Student.objects.all()
+
+    subjects = Subject.objects.all()
+    student_grades = []
+
+    for student in students:
+        grade_dict = {'student': student}
+
+        for subject in subjects:
+            grade = Grade.objects.filter(student=student, subject=subject).first()
+            grade_dict[subject.code] = grade.final_grade if grade else None
+        grade_dict['gwa'] = student.calculate_gwa()  # Add this line
+        student_grades.append(grade_dict)
+
+    for student in students:
+        print(f"{student.name} GWA: {student.calculate_gwa()}")
+        student.gwa = student.calculate_gwa()
+
+
+    return render(request, "grades.html", {
+        "student_grades": student_grades,
+        "subjects": subjects,
+        "section_filter": section_filter
+    })
+
+
+
+# View to handle grade update
+@csrf_exempt
+def update_grades(request):
+    if request.method == 'POST':
+        try:
+            student_id = request.POST.get('student_id')
+            cmsc204 = float(request.POST.get('cmsc204'))
+            csel301 = float(request.POST.get('csel301'))
+            csel302 = float(request.POST.get('csel302'))
+            itec106 = float(request.POST.get('itec106'))
+
+            # Validate grades are between 50 and 100
+            if not all(50 <= grade <= 100 for grade in [cmsc204, csel301, csel302, itec106]):
+                return redirect('grades_view')
+
+            student = get_object_or_404(Student, id=student_id)
+
+            # Update or create grades for each subject
+            subjects_map = {
+                'CMSC204': cmsc204,
+                'CSEL301': csel301,
+                'CSEL302': csel302,
+                'ITEC106': itec106,
+            }
+
+            for code, grade_value in subjects_map.items():
+                subject = Subject.objects.get(code=code)
+                grade_obj, created = Grade.objects.get_or_create(student=student, subject=subject)
+                grade_obj.final_grade = grade_value
+                grade_obj.save()
+
+            # Redirect back to the grades table page with updated data
+            return redirect('grades_view')
+
+        except Exception as e:
+            # On error, redirect back to grades page
+            return redirect('grades_view')
+
+    # If not POST, just redirect back
+    return redirect('grades_view')
+
+
 
 # Student Grouping and Profiling
 def studgroup(request):

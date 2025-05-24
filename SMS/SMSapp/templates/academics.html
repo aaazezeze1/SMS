@@ -410,6 +410,35 @@
             });
         });
 
+        // Sort by function
+        document.getElementById("sort_by").addEventListener("change", function () {
+            const sortBy = this.value;
+            const tableBody = document.querySelector("#studentTable tbody");
+            const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+            // Convert rows to an array of objects with keys for sorting
+            const rowData = rows.map(row => ({
+                element: row,
+                student_id: row.querySelector("td:nth-child(1)").innerText.trim().toLowerCase(),
+                name: row.querySelector("td:nth-child(2)").innerText.trim().toLowerCase(),
+                address: row.querySelector("td:nth-child(4)").innerText.trim().toLowerCase()
+            }));
+
+            // Quick Sort Algorithm
+            function quickSort(arr, key) {
+                if (arr.length <= 1) return arr;
+                const pivot = arr[0];
+                const left = arr.slice(1).filter(item => item[key] < pivot[key]);
+                const right = arr.slice(1).filter(item => item[key] >= pivot[key]);
+                return [...quickSort(left, key), pivot, ...quickSort(right, key)];
+            }
+
+            // Sort and re-render
+            const sortedData = quickSort(rowData, sortBy);
+            tableBody.innerHTML = ""; // Clear table
+            sortedData.forEach(data => tableBody.appendChild(data.element));
+        });
+        
         // Ensure edited attendance is submitted only when save button is clicked
         document.querySelectorAll('.modal form').forEach(function(form) {
             form.addEventListener('submit', function(event) {
@@ -447,36 +476,6 @@
                     alert('Fetch Error: ' + error.message);
                 });
             });
-        });
-
-
-        // Sort by function
-        document.getElementById("sort_by").addEventListener("change", function () {
-            const sortBy = this.value;
-            const tableBody = document.querySelector("#studentTable tbody");
-            const rows = Array.from(tableBody.querySelectorAll("tr"));
-
-            // Convert rows to an array of objects with keys for sorting
-            const rowData = rows.map(row => ({
-                element: row,
-                student_id: row.querySelector("td:nth-child(1)").innerText.trim().toLowerCase(),
-                name: row.querySelector("td:nth-child(2)").innerText.trim().toLowerCase(),
-                address: row.querySelector("td:nth-child(4)").innerText.trim().toLowerCase()
-            }));
-
-            // Quick Sort Algorithm
-            function quickSort(arr, key) {
-                if (arr.length <= 1) return arr;
-                const pivot = arr[0];
-                const left = arr.slice(1).filter(item => item[key] < pivot[key]);
-                const right = arr.slice(1).filter(item => item[key] >= pivot[key]);
-                return [...quickSort(left, key), pivot, ...quickSort(right, key)];
-            }
-
-            // Sort and re-render
-            const sortedData = quickSort(rowData, sortBy);
-            tableBody.innerHTML = ""; // Clear table
-            sortedData.forEach(data => tableBody.appendChild(data.element));
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
