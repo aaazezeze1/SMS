@@ -37,7 +37,6 @@ class Student(models.Model):
         total = sum(grade.final_grade for grade in grades)
         return total / grades.count()
     
-    
     def __str__(self):
         return self.name
     
@@ -75,13 +74,3 @@ class Grade(models.Model):
 
     def __str__(self):
         return f"{self.student.name} - {self.subject.code}: {self.final_grade}"
-
-
-# Student grouping
-class Grouping(models.Model):
-    student = models.OneToOneField(Student, on_delete=models.CASCADE)
-    gwa = models.DecimalField(max_digits=4, decimal_places=2)
-    result = models.CharField(max_length=10)
-
-    def __str__(self):
-        return self.student.name

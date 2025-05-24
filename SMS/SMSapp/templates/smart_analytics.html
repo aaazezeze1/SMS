@@ -3,10 +3,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Performance Analysis</title>
+    <title>Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Add icon to web browser tab -->
-    <link rel="shortcut icon" type="lspu-icon" href="{% static 'icons/logo.png' %}">
+     <link rel="shortcut icon" type="lspu-icon" href="{% static 'icons/logo.png' %}">
     <!-- For the sidebar toggle -->
     <script src="{% static 'script.js' %}"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,33 +64,12 @@
                             </a>
                         </li>
                     </ul>
-                </li>                                      
+                </li>                                
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#smart" aria-expanded="true" aria-controls="smart">
+                    <a href="{% url 'smart_analytics' %}" class="sidebar-link active">
                         <img src="{% static 'icons/analytics.png' %}" alt="SMART Analytics" class="me-3" style="max-width: 40px;">
                         <span>SMART Analytics</span>
                     </a>
-                    <ul id="smart" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="{% url 'studgroup' %}" class="sidebar-link">
-                                <img src="{% static 'icons/group.png' %}" alt="Student Grouping and Profiling" class="me-3" style="max-width: 40px;">
-                                <span>Student Grouping & Profiling</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'droprisk' %}" class="sidebar-link">
-                                <img src="{% static 'icons/risk.png' %}" alt="Drop Out Risk Prediction" class="me-3" style="max-width: 40px;">
-                                <span>Drop Out Risk Prediction</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'perfanalysis' %}" class="sidebar-link active">
-                                <img src="{% static 'icons/performance.png' %}" alt="Performance Prediction" class="me-3" style="max-width: 40px;">
-                                <span>Performance Analysis</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -117,6 +96,7 @@
         </aside>
         <!-- Sidebar Ends -->
         <!-- Main Component -->
+         <!-- Main Component -->
         <div class="main">
             <nav class="navbar navbar-expand">
                 <button class="toggler-btn" type="button">
@@ -127,19 +107,10 @@
             </nav>
             <main class="p-3 d-flex flex-column justify-content-between" style="min-height: 80vh;">
                 <div class="container-fluid">
-                    <div class="mb-3 text-center">
-                        <h1>Performance Analysis</h1>
-                    </div>
+                    <!-- Header and Add Button Row -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1 class="mb-0 text-start">SMART Analytics</h1>
                 </div>
-
-                <div class="container mt-auto">
-                    <div class="row justify-content-center">
-                        
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
     <style>
         * {
             font-family: "Ubuntu", sans-serif;
@@ -233,6 +204,7 @@
             font-weight: 500;
         }
 
+        /* Change color of active link page using active */
         .sidebar-link.active {
             background-color: #6bb8db;
             color: white;

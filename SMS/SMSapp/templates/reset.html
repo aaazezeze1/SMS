@@ -66,31 +66,10 @@
                     </ul>
                 </li>                                       
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#smart" aria-expanded="true" aria-controls="smart">
+                    <a href="{% url 'smart_analytics' %}" class="sidebar-link">
                         <img src="{% static 'icons/analytics.png' %}" alt="SMART Analytics" class="me-3" style="max-width: 40px;">
                         <span>SMART Analytics</span>
                     </a>
-                    <ul id="smart" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="{% url 'studgroup' %}" class="sidebar-link">
-                                <img src="{% static 'icons/group.png' %}" alt="Student Grouping and Profiling" class="me-3" style="max-width: 40px;">
-                                <span>Student Grouping & Profiling</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'droprisk' %}" class="sidebar-link">
-                                <img src="{% static 'icons/risk.png' %}" alt="Drop Out Risk Prediction" class="me-3" style="max-width: 40px;">
-                                <span>Drop Out Risk Prediction</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'perfanalysis' %}" class="sidebar-link">
-                                <img src="{% static 'icons/performance.png' %}" alt="Performance Prediction" class="me-3" style="max-width: 40px;">
-                                <span>Performance Analysis</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"

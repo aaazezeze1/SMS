@@ -10,7 +10,6 @@ import json
 from django.http import Http404
 from .models import Student
 from .models import Attendance
-from .models import Grouping
 from .models import Student, Attendance, Subject
 from .models import Attendance, Subject
 from .models import Subject
@@ -77,17 +76,12 @@ def reset(request):
 def studgroup(request):
     return render(request, 'studgroup.html')
 
-# performance analysis
-def perfanalysis(request):
-    return render(request, 'perfanalysis.html')
-
 # class management
 def academics(request):
     return render(request, 'academics.html')
 
-# drop out risk prediction
-def droprisk(request):
-    return render(request, 'droprisk.html')
+def smart_analytics_view(request):
+    return render(request, 'smart_analytics.html')
 
 # student record
 def studentlist(request):
@@ -285,17 +279,11 @@ def grades_view(request):
 
     for student in students:
         grade_dict = {'student': student}
-
         for subject in subjects:
             grade = Grade.objects.filter(student=student, subject=subject).first()
             grade_dict[subject.code] = grade.final_grade if grade else None
         grade_dict['gwa'] = student.calculate_gwa()  # Add this line
         student_grades.append(grade_dict)
-
-    for student in students:
-        print(f"{student.name} GWA: {student.calculate_gwa()}")
-        student.gwa = student.calculate_gwa()
-
 
     return render(request, "grades.html", {
         "student_grades": student_grades,
@@ -303,7 +291,7 @@ def grades_view(request):
         "section_filter": section_filter
     })
 
-
+ 
 
 # View to handle grade update
 @csrf_exempt
@@ -345,88 +333,3 @@ def update_grades(request):
 
     # If not POST, just redirect back
     return redirect('grades_view')
-
-
-
-# Student Grouping and Profiling
-def studgroup(request):
-    section_filter = request.GET.get('section', '')
-    
-    students = Student.objects.all()
-    if section_filter:
-        students = students.filter(section=section_filter)
-
-    student_data = []
-    for student in students:
-        try:
-            # Get existing data
-            grouping = Grouping.objects.get(student=student)
-            gwa = grouping.gwa
-            result = grouping.result
-        except Grouping.DoesNotExist:
-            gwa = 0.00  # Default GWA
-            result = "Failed"  # Default result
-            
-            # Create the grouping record if it doesn't exist
-            Grouping.objects.get_or_create(
-                student=student,
-                defaults={
-                    'gwa': gwa,
-                    'result': result
-                }
-            )
-        
-        student_data.append({
-            'student': student,
-            'gwa': gwa,
-            'result': result
-        })
-    
-    context = {
-        'student_data': student_data,
-        'section_filter': section_filter,
-    }
-    return render(request, 'studgroup.html', context)
-
-# Update GWA button
-@csrf_exempt
-def update_gwa(request):
-    if request.method == 'POST':
-        try:
-            student_id = request.POST.get('student_id')
-            new_gwa = request.POST.get('gwa')
-
-            gwa_float = float(new_gwa)
-
-            if gwa_float < 0 or gwa_float > 5:
-                messages.error(request, "Invalid GWA: must be between 0.00 and 5.00")
-                return redirect('studgroup')
-
-            grouping = Grouping.objects.get(student_id=student_id)
-            grouping.gwa = new_gwa
-
-            # Grade result logic
-            if gwa_float <= 1.25:
-                grouping.result = 'Excellent'
-            elif gwa_float <= 1.75:
-                grouping.result = 'Very Satisfactory'
-            elif gwa_float <= 2.25:
-                grouping.result = 'Satisfactory'
-            elif gwa_float <= 3.0:
-                grouping.result = 'Fairly Satisfactory'
-            else:
-                grouping.result = 'Failed'
-
-            grouping.save()
-
-            messages.success(request, "GWA updated successfully!")
-            return redirect('studgroup')
-
-        except ValueError:
-            messages.error(request, "Invalid input: GWA must be a number.")
-            return redirect('studgroup')
-        except Exception as e:
-            messages.error(request, f"Error updating GWA: {str(e)}")
-            return redirect('studgroup')
-
-    return redirect('studgroup')
