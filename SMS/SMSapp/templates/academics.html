@@ -52,7 +52,7 @@
                     </a>
                     <ul id="academics" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="{% url 'academics' %}" class="sidebar-link">
+                            <a href="{% url 'academics' %}" class="sidebar-link active">
                                 <img src="{% static 'icons/attendance.png' %}" alt="Attendance" class="me-3" style="max-width: 40px;">
                                 <span>Attendance</span>
                             </a>
@@ -178,7 +178,7 @@
                                     <form action="{% url 'update_attendance' student_id=entry.student.id %}" method="POST">
                                         {% csrf_token %}
                                         <!-- Hidden input to send the selected subject -->
-                                        <input type="hidden" name="subject" value="{{ selected_subject }}">
+                                        <input type="hidden" name="subject" value="{{ entry.subject.code|default:selected_subject }}">
                                         
                                         <div class="modal-content">
                                             <div class="modal-header">

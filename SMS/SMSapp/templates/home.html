@@ -98,32 +98,74 @@
         <!-- Main Component -->
         <div class="main">
             <nav class="navbar navbar-expand">
-                <button class="toggler-btn" type="button">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(0 0 0)">
-                        <path d="M20 7.125L4 7.125C3.37868 7.125 2.875 6.62132 2.875 6C2.875 5.37868 3.37868 4.875 4 4.875L20 4.875C20.6213 4.875 21.125 5.37868 21.125 6C21.125 6.62132 20.6213 7.125 20 7.125ZM20 13.125L4 13.125C3.37868 13.125 2.875 12.6213 2.875 12C2.875 11.3787 3.37868 10.875 4 10.875L20 10.875C20.6213 10.875 21.125 11.3787 21.125 12C21.125 12.6213 20.6213 13.125 20 13.125ZM20 19.125L4 19.125C3.37868 19.125 2.875 18.6213 2.875 18C2.875 17.3787 3.37868 16.875 4 16.875L20 16.875C20.6213 16.875 21.125 17.3787 21.125 18C21.125 18.6213 20.6213 19.125 20 19.125Z" fill="#000000"/>
-                    </svg>                
-                </button>
+                <button class="toggler-btn" type="button"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M20 7.125L4 7.125C3.37868 7.125 2.875 6.62132 2.875 6C2.875 5.37868 3.37868 4.875 4 4.875L20 4.875C20.6213 4.875 21.125 5.37868 21.125 6C21.125 6.62132 20.6213 7.125 20 7.125ZM20 13.125L4 13.125C3.37868 13.125 2.875 12.6213 2.875 12C2.875 11.3787 3.37868 10.875 4 10.875L20 10.875C20.6213 10.875 21.125 11.3787 21.125 12C21.125 12.6213 20.6213 13.125 20 13.125ZM20 19.125L4 19.125C3.37868 19.125 2.875 18.6213 2.875 18C2.875 17.3787 3.37868 16.875 4 16.875L20 16.875C20.6213 16.875 21.125 17.3787 21.125 18C21.125 18.6213 20.6213 19.125 20 19.125Z" fill="#000000"/></svg></button>
             </nav>
-            <main class="p-3 d-flex flex-column justify-content-between" style="min-height: 80vh;">
-                <div class="container-fluid">
-                    <div class="mb-3 text-center">
-                        <h1>Dashboard</h1>
+            <main class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1 class="mb-0">Dashboard</h1>
+                </div>
+
+                <!-- Summary + Chart Side-by-Side -->
+                <div class="row mb-5">
+                    <!-- Summary Cards (Left) -->
+                    <div class="col-md-6">
+                        <div class="row text-center">
+                            <div class="col-12 mb-3">
+                                <div class="card shadow rounded-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Total Students</h5>
+                                        <p class="card-text fs-3 fw-bold text-primary">{{ total_students }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="card shadow rounded-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">At Risk</h5>
+                                        <p class="card-text fs-3 fw-bold text-danger">{{ at_risk_students }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="card shadow rounded-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Average GWA</h5>
+                                        <p class="card-text fs-3 fw-bold text-success">{{ average_gwa }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart (Right) -->
+                    <div class="col-md-6 d-flex align-items-center justify-content-center">
+                        <div class="card shadow rounded-4" style="width: 100%; max-width: 400px;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center">Dropout Risk Overview</h5>
+                                <canvas id="riskChart" style="max-height: 250px;"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                
                 <!-- Bottom Buttons -->
                 <div class="container mt-auto">
                     <div class="row justify-content-center">
                         <div class="col-auto">
-                            <button class="btn btn-primary btn-lg rounded-4"><i class="bi bi-plus h3"></i><br>Add New Student</button>
+                            <a href="{% url 'studentlist' %}" class="btn btn-primary btn-lg rounded-4 text-white text-center">
+                                <i class="bi bi-plus h3"></i><br>Add New Student
+                            </a>                            
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-secondary btn-lg rounded-4"><i class="bi bi-search h3"></i><br>View Student List</button>
+                            <a href="{% url 'studentlist' %}" class="btn btn-secondary btn-lg rounded-4 text-white text-center">
+                                <i class="bi bi-search h3"></i><br>View Student List
+                            </a>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-success btn-lg rounded-4"><i class="bi bi-collection h3"></i><br>Manage Class</button>
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-danger btn-lg rounded-4"><i class="bi bi-caret-right h3"></i><br>Run AI Tools</button>
+                            <a href="{% url 'smart_analytics' %}" class="btn btn-danger btn-lg rounded-4 text-white text-center">
+                                <i class="bi bi-caret-right h3"></i><br>Run SMART Analytics
+                            </a>                        
                         </div>
                     </div>
                 </div>
@@ -274,7 +316,63 @@
                 margin-left: 0;
             }
         }
+
+        .sidebar.collapsed {
+        width: 0;
+        overflow: hidden;
+        transition: width 0.3s;
+        }
+
+        .main.expanded {
+            margin-left: 0 !important; 
+            transition: margin 0.3s;
+        }
+        
     </style>
+
+    <script> 
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggler = document.querySelector(".toggler-btn");
+        const sidebar = document.querySelector("#sidebar");
+        const main = document.querySelector(".main");
+
+        if (toggler && sidebar && main) {
+            toggler.addEventListener("click", function () {
+                sidebar.classList.toggle("collapsed");
+                main.classList.toggle("expanded");
+            });
+        }
+    });
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    const ctx = document.getElementById('riskChart').getContext('2d');
+    const riskChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Low Risk', 'Moderate Risk', 'High Risk'],
+            datasets: [{
+                data: [{{ low_risk }}, {{ moderate_risk }}, {{ high_risk }}],
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+            }
+        }
+    });
+    </script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

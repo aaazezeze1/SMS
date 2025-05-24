@@ -21,4 +21,6 @@ urlpatterns = [
     path('student/add/', views.add_student, name='add_student'),
     # Url for Smart Analuytics
     path('smart-analytics/', views.smart_analytics_view, name='smart_analytics'),
+    path('get_student_insights/<int:student_id>/', views.get_student_insights, name='get_student_insights'),
+
 ]

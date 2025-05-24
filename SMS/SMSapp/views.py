@@ -1,30 +1,42 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as auth_login
-from django.contrib.auth import authenticate, logout as auth_logout
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import update_session_auth_hash
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 import json
-from django.http import Http404
-from .models import Student
-from .models import Attendance
-from .models import Student, Attendance, Subject
-from .models import Attendance, Subject
-from .models import Subject
-from .models import Student, Subject, Grade
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 import logging
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, Http404
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+
+from .models import Student, Attendance, Subject, Grade
+from django.db.models import Avg
+from .analytics.generator import generate_analytics
 
 logger = logging.getLogger(__name__)
 
 
 
-# Create your views here.
+# Create your views here
 def home(request):
-    return render(request, "home.html")
+    students = Student.objects.all()
+    total = students.count()
+    at_risk = students.filter(dropout_risk__in=['Moderate', 'High']).count()
+    gwa_list = [s.calculate_gwa() for s in students if s.calculate_gwa()]
+    avg_gwa = round(sum(gwa_list) / len(gwa_list), 2) if gwa_list else 0
+
+    low = students.filter(dropout_risk='Low').count()
+    moderate = students.filter(dropout_risk='Moderate').count()
+    high = students.filter(dropout_risk='High').count()
+
+    context = {
+        'total_students': total,
+        'at_risk_students': at_risk,
+        'average_gwa': avg_gwa,
+        'low_risk': low,
+        'moderate_risk': moderate,
+        'high_risk': high,
+    }
+    return render(request, 'home.html', context)
 
 def login(request):
     if request.method == 'POST':
@@ -72,16 +84,11 @@ def reset(request):
 
     return render(request, 'reset.html')
 
-# student grouping
-def studgroup(request):
-    return render(request, 'studgroup.html')
-
 # class management
 def academics(request):
     return render(request, 'academics.html')
 
-def smart_analytics_view(request):
-    return render(request, 'smart_analytics.html')
+
 
 # student record
 def studentlist(request):
@@ -159,16 +166,18 @@ def add_student(request):
                 absent_days=0
             )
 
-            # Create grade record for the new student
-            Grade.objects.create(
-                student=student,
-                cmsc204=50.0,
-                csel301=50.0,
-                csel302=50.0,
-                itec106=50.0,
-                gwa=50.0
-            )
-            
+            # Create default grade records for required subjects
+            subjects = Subject.objects.filter(code__in=['CMSC204', 'CSEL301', 'CSEL302', 'ITEC106'])
+            for subject in subjects:
+                Grade.objects.create(
+                    student=student,
+                    subject=subject,
+                    final_grade=50.0
+                )
+
+            # Generate insights based on the new student data
+            student.generate_insights()
+
             return JsonResponse({
                 'success': True, 
                 'student_id': student.student_id
@@ -206,7 +215,8 @@ def attendance_view(request):
 
         student_attendance.append({
             'student': student,
-            'attendance': attendance
+            'attendance': attendance,
+            'subject': attendance.subject if attendance else Subject.objects.get(code=subject_filter) if subject_filter else None
         })
 
     return render(request, "academics.html", {
@@ -214,7 +224,7 @@ def attendance_view(request):
     "section_filter": section_filter,
     "subjects": subjects,
     "subject_filter": subject_filter,
-    "selected_subject": subject_filter,  # <-- THIS LINE is important
+    "selected_subject": subject_filter,
 })
 
 # edit button on academics attendance table
@@ -222,6 +232,7 @@ def attendance_view(request):
 def update_attendance(request, student_id):
     if request.method == 'POST':
         try:
+
             present_days = int(request.POST.get('present_days', 0))
             excused_days = int(request.POST.get('excused_days', 0))
             absent_days = int(request.POST.get('absent_days', 0))
@@ -243,10 +254,22 @@ def update_attendance(request, student_id):
                 }
             )
 
+            total_days = present_days + excused_days + absent_days
+            MAX_ALLOWED_DAYS = 100
+
+            if total_days > MAX_ALLOWED_DAYS:
+                return JsonResponse({
+                    'error': f'Total attendance days exceed limit of {MAX_ALLOWED_DAYS}. Currently: {total_days}'
+                }, status=400)
+
             attendance.present_days = present_days
             attendance.excused_days = excused_days
             attendance.absent_days = absent_days
             attendance.save()
+
+            for student in Student.objects.all():
+                student.generate_insights()
+
 
             return JsonResponse({'success': True})
 
@@ -282,7 +305,7 @@ def grades_view(request):
         for subject in subjects:
             grade = Grade.objects.filter(student=student, subject=subject).first()
             grade_dict[subject.code] = grade.final_grade if grade else None
-        grade_dict['gwa'] = student.calculate_gwa()  # Add this line
+        grade_dict['gwa'] = student.gwa
         student_grades.append(grade_dict)
 
     return render(request, "grades.html", {
@@ -324,6 +347,16 @@ def update_grades(request):
                 grade_obj.final_grade = grade_value
                 grade_obj.save()
 
+            # Recalculate and save GWA in student model
+            student.gwa = student.calculate_gwa()
+            student.save()
+
+            for student in students:
+                student.generate_insights()  # Regenerate insights from updated DB
+
+            context = {
+                'students': students,
+    }
             # Redirect back to the grades table page with updated data
             return redirect('grades_view')
 
@@ -333,3 +366,41 @@ def update_grades(request):
 
     # If not POST, just redirect back
     return redirect('grades_view')
+
+# for smart analytics
+
+@login_required
+def smart_analytics_view(request):
+    students = Student.objects.all()
+
+    section_filter = request.GET.get('section')
+    if section_filter and section_filter != 'All':
+        students = students.filter(section=section_filter)
+
+    # Optional: force insights regeneration here (if needed)
+    for student in students:
+        student.generate_insights()
+
+    # OR call the generate_analytics function if it does something else
+    generate_analytics()
+
+    # Add any necessary analytics data to the context here
+    return render(request, 'smart_analytics.html', {
+        'students': students,
+        'section_filter': section_filter,
+        # Add analytics data if needed
+    })
+
+
+# AJAX endpoint to fetch student insights
+@csrf_exempt
+def get_student_insights(request, student_id):
+    if request.method == 'GET':
+        try:
+            student = get_object_or_404(Student, id=student_id)
+            insights = student.generate_insights()
+            return JsonResponse({'success': True, 'insights': insights})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
