@@ -10,3 +10,4 @@ Made by Amazing Grace Cabiles, Cyrelle Kristin Gapit, Francen Manalo, Ivory Jade
 # Algorithms Used
 1. Linear Search (searching the tables)
 2. Quick Sort (sort by buttons)
+3. KNN Algorithm (SMART Analytics)

@@ -114,9 +114,9 @@
                 </div>
                 <form method="post">
                     {% csrf_token %}
-                    <button type="submit" name="run_analysis" class="btn btn-primary">Run Analytics</button>
+                    <button type="submit" name="run_analysis" id="runBtn" class="btn btn-primary">Run Analytics</button>
                 </form>
-
+                <br>
                 <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
                     <!-- Section Filter (aligned left) -->
                     <div>
@@ -169,7 +169,7 @@
                                 <td>{{ student.dropout_risk }}</td>
                                 <td>{{ student.performance_level}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#insightsModal{{ student.id }}">
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#insightsModal{{ student.id }}">
                                         View
                                     </button>
             
@@ -332,12 +332,23 @@
             transition: all 0.2s ease-out;
         }
 
-        .btn {
+        .btn:not(.btn-danger) {
+            background-color: #6c757d !important; 
+            border-color: #6c757d !important;
+            color: #fff !important;
+        }
+
+        .btn:not(.btn-danger):hover {
+            background-color: #5c636a !important; 
+            border-color: #5c636a !important;
+        }
+
+        #runBtn {
             background-color: #64b458 !important;
             border-color: #64b458 !important;
         }
 
-        .btn:hover {
+        #runBtn:hover {
             background-color: #5d9861 !important;
             border-color: #5d9861 !important;
         }
@@ -353,8 +364,6 @@
             }
         }
     </style>
-
-
     <script>
         // Linear Search to search table
         document.getElementById("search").addEventListener("input", function() {
@@ -403,13 +412,7 @@
             tableBody.innerHTML = ""; // Clear table
             sortedData.forEach(data => tableBody.appendChild(data.element));
         });
-        
-        
     </script>
-
-    
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

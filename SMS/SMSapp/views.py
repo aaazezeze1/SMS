@@ -14,8 +14,6 @@ from .analytics.generator import generate_analytics
 
 logger = logging.getLogger(__name__)
 
-
-
 # Create your views here
 def home(request):
     students = Student.objects.all()
@@ -59,7 +57,7 @@ def logout(request):
     messages.success(request, ("You have been logged out"))
     return redirect("login")
 
-# change username and password
+# Change username and password
 @login_required
 def reset(request):
     user = request.user
@@ -84,13 +82,11 @@ def reset(request):
 
     return render(request, 'reset.html')
 
-# class management
+# Class management
 def academics(request):
     return render(request, 'academics.html')
 
-
-
-# student record
+# Student record
 def studentlist(request):
     # Get the section filter from the query string, if provided
     section_filter = request.GET.get('section', None)
@@ -116,7 +112,7 @@ def studentlist(request):
         'section_filter': section_filter
     })
 
-# student record table delete student function
+# Student record table delete student function
 @csrf_exempt
 def delete_student(request, id):
     if request.method == 'POST':
@@ -127,7 +123,7 @@ def delete_student(request, id):
         except Student.DoesNotExist:
             return JsonResponse({'error': 'Student not found'}, status=404)
 
-# student record table save the edited student function
+# Student record table save the edited student function
 @csrf_exempt
 def edit_student(request, id):
     if request.method == 'POST':
@@ -144,7 +140,7 @@ def edit_student(request, id):
         except Student.DoesNotExist:
             return JsonResponse({'error': 'Student not found'}, status=404)
         
-# student record table add student function
+# Student record table add student function
 @csrf_exempt
 def add_student(request):
     if request.method == 'POST':
@@ -189,7 +185,7 @@ def add_student(request):
             }, status=400)
     return JsonResponse({'success': False}, status=400)
 
-# class management table
+# Class management table
 def attendance_view(request):
     section_filter = request.GET.get('section', '')  # filter by section
     subject_filter = request.GET.get('subject', '')  # filter by subject
@@ -227,7 +223,7 @@ def attendance_view(request):
     "selected_subject": subject_filter,
 })
 
-# edit button on academics attendance table
+# Edit button on academics attendance table
 @csrf_exempt
 def update_attendance(request, student_id):
     if request.method == 'POST':
@@ -286,8 +282,7 @@ def update_attendance(request, student_id):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
-
-#Student grades - i think this should display the students id, name, and section for the grades table?
+#Student grades
 def grades_view(request):
     section_filter = request.GET.get('section', '')
 
@@ -313,8 +308,6 @@ def grades_view(request):
         "subjects": subjects,
         "section_filter": section_filter
     })
-
- 
 
 # View to handle grade update
 @csrf_exempt
@@ -351,11 +344,11 @@ def update_grades(request):
             student.gwa = student.calculate_gwa()
             student.save()
 
-            for student in students:
+            for student in student:
                 student.generate_insights()  # Regenerate insights from updated DB
 
             context = {
-                'students': students,
+                'students': student,
     }
             # Redirect back to the grades table page with updated data
             return redirect('grades_view')
@@ -367,8 +360,7 @@ def update_grades(request):
     # If not POST, just redirect back
     return redirect('grades_view')
 
-# for smart analytics
-
+# SMART analytics
 @login_required
 def smart_analytics_view(request):
     students = Student.objects.all()
@@ -403,4 +395,3 @@ def get_student_insights(request, student_id):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
-

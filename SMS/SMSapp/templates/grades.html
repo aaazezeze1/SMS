@@ -105,7 +105,7 @@
             </nav>
             <main class="p-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h1 class="mb-0">Attendance</h1>
+                    <h1 class="mb-0">Grades</h1>
                 </div>
                 <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
                     <!-- Section Filter (aligned left) -->
@@ -187,237 +187,248 @@
                     </table>
                 </div>
 
-                <!-- Edit Modal -->
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <form method="POST" action="{% url 'update_grades' %}">
-        {% csrf_token %}
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editModalLabel">Edit Grades</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          
-          <div class="modal-body">
-            <p><strong>Name:</strong> <span id="modal-student-name"></span></p>
-            <p><strong>Section:</strong> <span id="modal-student-section"></span></p>
-            <input type="hidden" name="student_id" id="modal-student-id">
-            
-            {% for subject in subjects %}
-            <div class="form-group">
-              <label for="modal-{{ subject.code|lower }}">{{ subject.code }}</label>
-              <input type="number" step="0.01" class="form-control" 
-                     name="{{ subject.code|lower }}" 
-                     id="modal-{{ subject.code|lower }}" required>
-            </div>
-            {% endfor %}
-          </div>
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <form method="POST" action="{% url 'update_grades' %}">
+                {% csrf_token %}
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Grades</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <p><strong>Name:</strong> <span id="modal-student-name"></span></p>
+                    <p><strong>Section:</strong> <span id="modal-student-section"></span></p>
+                    <input type="hidden" name="student_id" id="modal-student-id">
+                    
+                    {% for subject in subjects %}
+                    <div class="form-group">
+                    <label for="modal-{{ subject.code|lower }}">{{ subject.code }}</label>
+                    <input type="number" step="0.01" class="form-control" 
+                            name="{{ subject.code|lower }}" 
+                            id="modal-{{ subject.code|lower }}" required>
+                    </div>
+                    {% endfor %}
+                </div>
   
           <div class="modal-footer">
-            <button type="submit" class="btn btn-success">Save Changes</button>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="submit" id="savechanges-btn-modal" class="btn btn-success">Save Changes</button>
           </div>
         </div>
       </form>
     </div>
   </div>
-  
-                
-
-        <style>
-            * {
-                font-family: "Ubuntu", sans-serif;
-            }
-    
-            li {
-                list-style: none;
-            }
-    
-            a {
-                text-decoration: none;
-                color: black;
-            }
-    
-            .main{
-                min-height: 100vh;
-                width: 100%;
-                overflow: hidden;
-            }
-    
-            #sidebar{
-                max-width: 264px;
-                min-width: 264px;
-                transition: all 0.35s ease-in-out;
-                background-color: white;
-                display: flex;
-                flex-direction: column;
-            }
-    
-            #sidebar.collapsed {
-                margin-left: -264px;
-            }
-    
-            .toggler-btn {
-                background-color: transparent;
-                cursor: pointer;
-                border: 0;
-            }
-    
-            .toggler-btn i {
-                font-size: 1.5rem;
-                color: white;
-                font-weight: bold;
-            }
-    
-            .navbar {
-                padding: 1.15rem 1.5rem;
-            }
-    
-            .sidebar-nav {
-                flex: 1 1 auto;
-            }
-    
-            .sidebar-logo {
-                padding: 1.15 rem 1.5rem;
-                text-align: center;
-            }
-    
-            .sidebar-logo a{
-                color: black;
-                font-weight: 800;
-                font-size: 1.25rem;
-            }
-    
-            .sidebar-header{
-                color: white;
-                font-size: .75rem;
-                padding: 1.5rem 1.5rem .375rem;
-            }
-    
-            a.sidebar-link{
-                padding: .625rem 1.625rem;
-                color: black;
-                position: relative;
-                transition: all 0.35s;
-                display: flex;
-                align-items: center; /* Vertical align */
-                gap: 0.75rem; /* Space between icon and text */
-            }
-    
-            .sidebar-icon {
-                /* Smaller side bar icons */
-                width: 24px;
-                height: 24px;
-                flex-shrink: 0;
-            }
-    
-            /* Sidebar links span text */
-            .sidebar-link span {
-                font-size: 0.95rem;
-                font-weight: 500;
-            }
-    
-            .sidebar-link.active {
-                background-color: #6bb8db;
-                color: white;
-                font-weight: bolder;
-            }
-    
-            a.sidebar-link:hover {
-                font-weight: bolder;
-                color: white;
-                background-color: #6bb8db;
-            }
-    
-            .sidebar-link[data-bs-toggle="collapse"]::after{
-                border: solid;
-                border-width: 0 .075rem .075rem 0;
-                content: "";
-                display: inline-block;
-                padding: 2px;
-                position: absolute;
-                right: 1.5rem;
-                top: 1.4rem;
-                transform: rotate(-135deg);
-                transition: all 0.2s ease-out;
-            }
-    
-            .sidebar-link[data-bs-toggle="collapse"].collapsed::after{
-                transform: rotate(45deg);
-                transition: all 0.2s ease-out;
-            }
-        </style>
-
-<script>
-// Linear Search to search table
-document.getElementById("search").addEventListener("input", function() {
-    const searchTerm = this.value.toLowerCase();
-    const rows = document.querySelectorAll("#studentTable tbody tr");
-
-    rows.forEach(row => {
-        const name = row.querySelector("td:nth-child(2)").innerText.toLowerCase(); // Name column (index 2)
-        const studentId = row.querySelector("td:nth-child(1)").innerText.toLowerCase(); // ID column (index 1)
-        const address = row.querySelector("td:nth-child(4)").innerText.toLowerCase(); // Address column (index 4)
-
-        // Check if any column contains the search term
-        if (name.includes(searchTerm) || studentId.includes(searchTerm) || address.includes(searchTerm)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
+    <style>
+        * {
+            font-family: "Ubuntu", sans-serif;
         }
-    });
-});
+    
+        li {
+            list-style: none;
+        }
+    
+        a {
+            text-decoration: none;
+            color: black;
+        }
+    
+        .main{
+            min-height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+    
+        #sidebar{
+            max-width: 264px;
+            min-width: 264px;
+            transition: all 0.35s ease-in-out;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+        }
+    
+        #sidebar.collapsed {
+            margin-left: -264px;
+        }
+    
+        .toggler-btn {
+            background-color: transparent;
+            cursor: pointer;
+            border: 0;
+        }
+    
+        .toggler-btn i {
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+    
+        .navbar {
+            padding: 1.15rem 1.5rem;
+        }
+    
+        .sidebar-nav {
+            flex: 1 1 auto;
+        }
+    
+        .sidebar-logo {
+            padding: 1.15 rem 1.5rem;
+            text-align: center;
+        }
+    
+        .sidebar-logo a{
+            color: black;
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+    
+        .sidebar-header{
+            color: white;
+            font-size: .75rem;
+            padding: 1.5rem 1.5rem .375rem;
+        }
+    
+        a.sidebar-link{
+            padding: .625rem 1.625rem;
+            color: black;
+            position: relative;
+            transition: all 0.35s;
+            display: flex;
+            align-items: center; /* Vertical align */
+            gap: 0.75rem; /* Space between icon and text */
+        }
+    
+        .sidebar-icon {
+            /* Smaller side bar icons */
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+    
+        /* Sidebar links span text */
+        .sidebar-link span {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+    
+        .sidebar-link.active {
+            background-color: #6bb8db;
+            color: white;
+            font-weight: bolder;
+        }
+    
+        a.sidebar-link:hover {
+            font-weight: bolder;
+            color: white;
+            background-color: #6bb8db;
+        }
 
-// Sort by function
-document.getElementById("sort_by").addEventListener("change", function () {
-    const sortBy = this.value;
-    const tableBody = document.querySelector("#studentTable tbody");
-    const rows = Array.from(tableBody.querySelectorAll("tr"));
+        .btn:not(.btn-danger) {
+            background-color: #6c757d !important; 
+            border-color: #6c757d !important;
+            color: #fff !important;
+        }
 
-    // Convert rows to an array of objects with keys for sorting
-    const rowData = rows.map(row => ({
-        element: row,
-        student_id: row.querySelector("td:nth-child(1)").innerText.trim().toLowerCase(),
-        name: row.querySelector("td:nth-child(2)").innerText.trim().toLowerCase(),
-        address: row.querySelector("td:nth-child(4)").innerText.trim().toLowerCase()
-    }));
+        .btn:not(.btn-danger):hover {
+            background-color: #5c636a !important; 
+            border-color: #5c636a !important;
+        }
 
-    // Quick Sort Algorithm
-    function quickSort(arr, key) {
-        if (arr.length <= 1) return arr;
-        const pivot = arr[0];
-        const left = arr.slice(1).filter(item => item[key] < pivot[key]);
-        const right = arr.slice(1).filter(item => item[key] >= pivot[key]);
-        return [...quickSort(left, key), pivot, ...quickSort(right, key)];
-    }
+        #savechanges-btn-modal {
+            background-color: #64b458 !important;
+            border-color: #64b458 !important;
+        }
 
-    // Sort and re-render
-    const sortedData = quickSort(rowData, sortBy);
-    tableBody.innerHTML = ""; // Clear table
-    sortedData.forEach(data => tableBody.appendChild(data.element));
-});
-
-</script>
-
+        #savechanges-btn-modal:hover {
+            background-color: #5d9861 !important;
+            border-color: #5d9861 !important;
+        }
+    
+        .sidebar-link[data-bs-toggle="collapse"]::after{
+            border: solid;
+            border-width: 0 .075rem .075rem 0;
+            content: "";
+            display: inline-block;
+            padding: 2px;
+            position: absolute;
+            right: 1.5rem;
+            top: 1.4rem;
+            transform: rotate(-135deg);
+            transition: all 0.2s ease-out;
+        }
+    
+        .sidebar-link[data-bs-toggle="collapse"].collapsed::after{
+            transform: rotate(45deg);
+            transition: all 0.2s ease-out;
+        }
+    </style>
 <script>
-    document.querySelectorAll('.edit-btn').forEach(button => {
-        button.addEventListener('click', () => {
-        const modal = document.getElementById('editModal');
-        modal.querySelector('#modal-student-id').value = button.dataset.studentId;
-        modal.querySelector('#modal-student-name').textContent = button.dataset.studentName;
-        modal.querySelector('#modal-student-section').textContent = button.dataset.studentSection;
+    // Linear Search to search table
+    document.getElementById("search").addEventListener("input", function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll("#studentTable tbody tr");
 
-        {% for subject in subjects %}
-        modal.querySelector('#modal-{{ subject.code|lower }}').value = button.dataset["{{ subject.code|lower }}"] || "";
-        {% endfor %}
+        rows.forEach(row => {
+            const name = row.querySelector("td:nth-child(2)").innerText.toLowerCase(); // Name column (index 2)
+            const studentId = row.querySelector("td:nth-child(1)").innerText.toLowerCase(); // ID column (index 1)
+            const address = row.querySelector("td:nth-child(4)").innerText.toLowerCase(); // Address column (index 4)
+
+            // Check if any column contains the search term
+            if (name.includes(searchTerm) || studentId.includes(searchTerm) || address.includes(searchTerm)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
     });
+
+    // Sort by function
+    document.getElementById("sort_by").addEventListener("change", function () {
+        const sortBy = this.value;
+        const tableBody = document.querySelector("#studentTable tbody");
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+        // Convert rows to an array of objects with keys for sorting
+        const rowData = rows.map(row => ({
+            element: row,
+            student_id: row.querySelector("td:nth-child(1)").innerText.trim().toLowerCase(),
+            name: row.querySelector("td:nth-child(2)").innerText.trim().toLowerCase(),
+            address: row.querySelector("td:nth-child(4)").innerText.trim().toLowerCase()
+        }));
+
+        // Quick Sort Algorithm
+        function quickSort(arr, key) {
+            if (arr.length <= 1) return arr;
+            const pivot = arr[0];
+            const left = arr.slice(1).filter(item => item[key] < pivot[key]);
+            const right = arr.slice(1).filter(item => item[key] >= pivot[key]);
+            return [...quickSort(left, key), pivot, ...quickSort(right, key)];
+        }
+
+        // Sort and re-render
+        const sortedData = quickSort(rowData, sortBy);
+        tableBody.innerHTML = ""; // Clear table
+        sortedData.forEach(data => tableBody.appendChild(data.element));
     });
+
+    </script>
+
+    <script>
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', () => {
+            const modal = document.getElementById('editModal');
+            modal.querySelector('#modal-student-id').value = button.dataset.studentId;
+            modal.querySelector('#modal-student-name').textContent = button.dataset.studentName;
+            modal.querySelector('#modal-student-section').textContent = button.dataset.studentSection;
+
+            {% for subject in subjects %}
+            modal.querySelector('#modal-{{ subject.code|lower }}').value = button.dataset["{{ subject.code|lower }}"] || "";
+            {% endfor %}
+        });
+        });
 </script>
-  
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

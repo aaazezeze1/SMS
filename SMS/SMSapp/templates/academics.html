@@ -116,6 +116,19 @@
                             </select>
                         </form>
                     </div>
+                    <!-- Subject Filter (centered) -->
+                    <div style="max-width: 450px;">
+                        <label for="subjectSelect" class="form-label mb-0">Filter by Subject:</label>
+                        <form method="GET" action="{% url 'academics' %}">
+                            <select id="subjectSelect" name="subject" class="form-select" onchange="this.form.submit()">
+                                {% for subject in subjects %}
+                                    <option value="{{ subject.code }}" {% if subject.code == subject_filter %}selected{% endif %}>
+                                        {{ subject.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
                     <!-- Right-side tools (Search + Sort) -->
                     <div class="d-flex align-items-center gap-3">
                         <!-- Search Input -->
@@ -132,19 +145,6 @@
                         </form>
                     </div>
                 </div>
-                <!-- Dropdown control for Su nbjects -->
-                <div style="max-width: 450px; margin-bottom: 1rem;">
-                    <label for="subjectSelect" class="form-label mb-0">Filter by Subject:</label>
-                    <form method="GET" action="{% url 'academics' %}">
-                        <select id="subjectSelect" name="subject" class="form-select" onchange="this.form.submit()">
-                            {% for subject in subjects %}
-                                <option value="{{ subject.code }}" {% if subject.code == subject_filter %}selected{% endif %}>
-                                    {{ subject.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </form>
-                </div>         
                 <!-- Table -->
                 <div class="table-responsive text-center">
                 <table class="table table-bordered" id="studentTable">
@@ -200,7 +200,7 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="submit" id="savechanges-btn-modal" class="btn btn-primary">Save changes</button>
+                                                <button type="submit" id="savechanges-btn-modal" class="btn btn-primary">Save Changes</button>
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>
@@ -417,7 +417,18 @@
             tableBody.innerHTML = ""; // Clear table
             sortedData.forEach(data => tableBody.appendChild(data.element));
         });
-        
+
+        // This allows the selected subject from the drop down to save the attendance in that subject
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('show.bs.modal', function () {
+                const subjectCode = document.getElementById('subjectSelect')?.value;
+                const hiddenInput = this.querySelector('input[name="subject"]');
+                if (hiddenInput && subjectCode) {
+                    hiddenInput.value = subjectCode;
+                }
+            });
+        });
+
         // Ensure edited attendance is submitted only when save button is clicked
         document.querySelectorAll('.modal form').forEach(function(form) {
             form.addEventListener('submit', function(event) {
@@ -443,16 +454,16 @@
                             modal.querySelector('[data-bs-dismiss="modal"]').click();
                             window.location.reload();
                         } else {
-                            alert('Error: ' + (data.error || 'There was an error saving the attendance.'));
+                            alert("⚠️ Error: Invalid Values. Please Try Again.");
                         }
                     } catch (e) {
-                        alert("Server returned invalid JSON. Check console for details.");
+                        alert("⚠️ Error: The server returned an unexpected response. Please Try Again.");
                         console.error("Failed to parse JSON:", text);
                     }
                 })
                 .catch(error => {
+                    alert("❌ Error: Could not reach the server. Please check your connection or try again later.");
                     console.error('Fetch error:', error);
-                    alert('Fetch Error: ' + error.message);
                 });
             });
         });
