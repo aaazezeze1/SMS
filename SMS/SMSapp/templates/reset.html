@@ -112,7 +112,7 @@
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" name="username" id="username" required>
+                                <input type="text" id="usernameInput" class="form-control" name="username" id="username" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">New Password</label>
@@ -279,15 +279,22 @@
             }
         }
     </style>
-    <!-- Password match checking -->
     <script>
+        // Password match checking
         document.querySelector("form").addEventListener("submit", function(e) {
+            const username = document.getElementById("usernameInput").value.trim();
             const pwd = document.getElementById("password").value;
             const confirmPwd = document.getElementById("confirm_password").value;
 
+            if (!username) {
+                e.preventDefault();
+                alert("⚠️ Error: Please enter a username before updating the password.");
+                return;
+            }
+
             if (pwd !== confirmPwd) {
                 e.preventDefault();
-                alert("Passwords do not match.");
+                alert("⚠️ Error: Passwords do not match. Please Try Again.");
             }
         });
     </script>

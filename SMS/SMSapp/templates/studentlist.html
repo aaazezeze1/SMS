@@ -529,7 +529,7 @@
 
             // Validate phone number (only digits allowed)
             if (!/^\d+$/.test(contact)) {
-                alert('Please enter a valid phone number with digits only.');
+                alert('⚠️ Error: Please enter a valid phone number with digits only.');
                 return;
             }
 
@@ -552,11 +552,11 @@
             })
             .then(response => response.json())
             .then(data => {
-                alert('Student updated successfully');
+                alert('✅ Student updated successfully!');
                 location.reload();
             })
             .catch(error => {
-                alert('Error updating student');
+                alert('⚠️ Error: Error updating student');
                 console.error('Error:', error);
             });
         });
@@ -589,16 +589,16 @@
                     modal.hide();
                     
                     // Show success message
-                    alert('Student added successfully! ID: ' + result.student_id);
+                    alert('✅ Student added successfully! ID: ' + result.student_id);
                     
                     // Reload the page to show the new student
                     location.reload();
                 } else {
-                    alert('Failed to add student: ' + (result.error || 'Unknown error'));
+                    alert('⚠️ Error: Failed to add student: ' + (result.error || 'Unknown error'));
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while adding the student.');
+                alert('⚠️ Error: An error occurred while adding the student.');
             }
         });
 
@@ -617,7 +617,7 @@
                     alert('Student deleted successfully');
                 })
                 .catch(error => {
-                    alert('Error deleting student');
+                    alert('⚠️ Error: Error deleting student');
                     console.error('Error:', error);
                 });
             }
