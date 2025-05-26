@@ -23,3 +23,4 @@ Made by Amazing Grace Cabiles, Cyrelle Kristin Gapit, Francen Manalo, Ivory Jade
 ![Image](https://github.com/user-attachments/assets/c6d42dee-c508-4bae-b8d2-af80f1423bbb)
 ![Image](https://github.com/user-attachments/assets/83108c9d-4599-4fcd-92db-5e966211f698)
 ![Image](https://github.com/user-attachments/assets/aba7869e-f368-4628-9520-e9334b8b584e)
+![Image](https://github.com/user-attachments/assets/51422764-91ac-43d3-a4bf-28b10691b8f9)
