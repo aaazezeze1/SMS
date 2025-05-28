@@ -55,10 +55,6 @@ def generate_analytics():
     if not data:
         return "No data to analyze."
 
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.cluster import KMeans
-    import numpy as np
-
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(data)
 
@@ -96,4 +92,3 @@ def generate_analytics():
         student.save()
 
     return "Analytics generated and updated for all students."
-

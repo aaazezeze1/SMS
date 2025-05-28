@@ -6,7 +6,8 @@ Made by Amazing Grace Cabiles, Cyrelle Kristin Gapit, Francen Manalo, Ivory Jade
 1. Python (version 3.13.3)
 2. Django (version 5.2)
 3. Scikit Learn (version 1.6.1)
-4. Line Icons, Flaticon, and Bootstrap Icons 
+4. Numpy (version 2.2.5)
+5. Line Icons, Flaticon, and Bootstrap Icons 
 
 # Algorithms Used
 1. Linear Search (searching the tables)
