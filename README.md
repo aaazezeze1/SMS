@@ -14,6 +14,10 @@ Made by Amazing Grace Cabiles, Cyrelle Kristin Gapit, Francen Manalo, Ivory Jade
 2. Quick Sort (sort by buttons)
 3. KNN Algorithm (SMART Analytics)
 
+# Credentials
+Username: admin
+Password: admin123
+
 # Screenshots
 ![Image](https://github.com/user-attachments/assets/de10afac-6884-46d9-ab05-ec6abfd32053)
 ![Image](https://github.com/user-attachments/assets/83feb71b-9445-4d0e-8df7-e5233a06ae79)
