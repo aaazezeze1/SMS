@@ -15,7 +15,7 @@ Made by Amazing Grace Cabiles, Cyrelle Kristin Gapit, Francen Manalo, Ivory Jade
 3. KNN Algorithm (SMART Analytics)
 
 # Credentials
-Username: admin
+Username: admin\
 Password: admin123
 
 # Screenshots
